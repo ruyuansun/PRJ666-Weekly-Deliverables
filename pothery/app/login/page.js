@@ -16,6 +16,7 @@ export default function Login() {
 
   function submitCodehandle(e){
     // Submit code to the backend via post request
+    // Require path to backend
   }
 
     return (
