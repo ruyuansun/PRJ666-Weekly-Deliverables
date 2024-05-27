@@ -1,29 +1,22 @@
-export default function Login() {
+export default function Register() {
   return (
     <div className="text-center">
-      <h1 className="text-5xl font-medium mb-3">Sign In</h1>
+      <h1 className="text-5xl font-medium m-3">Create an Account</h1>
 
-      <p className="font-medium">
-        Dont have an account?{" "}
-        <a className="underline" href="/register">
-          Sign up
-        </a>
-      </p>
-
-      <p className="mb-10 font-medium">
-        Forgot password?{" "}
-        <a className="underline" href="/resetPassword">
-          Reset password
+      <p className="font-medium mb-10">
+        Already have an account?{" "}
+        <a className="underline" href="/login">
+          Sign in
         </a>
       </p>
 
       <form className="flex flex-col w-96 mx-auto space-y-4" method="post">
         <input
           className="border rounded-md py-2 px-3 w-96"
-          type="text"
-          id="username"
-          name="username"
-          placeholder="username/email"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="email"
         />
 
         <input
@@ -34,11 +27,19 @@ export default function Login() {
           placeholder="password"
         />
 
+        <input
+          className="border rounded-md py-2 px-3 w-96"
+          type="password"
+          id="password"
+          name="password"
+          placeholder="confirm password"
+        />
+
         <button
           className="bg-black text-white border rounded-md py-2 px-4"
           type="submit"
         >
-          Sign In
+          Reset
         </button>
       </form>
     </div>
