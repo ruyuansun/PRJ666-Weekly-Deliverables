@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const db = require("./database/msql_interface");
+const speakeasy = require("speakeasy"); // Used to generate and verify 2FA codes
+const qr = require("qrcode");
 
 // User register
 router.post("/register", (req, res) => {
@@ -76,23 +78,63 @@ router.post("/resetPassword", (req, res) => {
 
 // Enable 2FA
 router.post("/enable2fa", (req, res) => {
-  const { userId } = req.body;
-  if (userId) {
-    // Implementation for enabling 2FA
-    res.status(200).json({ message: "2FA enabled" });
+  const email = req.body.email;
+  if (email) {
+    const secret = speakeasy.generateSecret({ length: 20 });
+    const query =
+      "UPDATE users SET 2fa_enabled = 1, 2fa_secret = ? WHERE email = ?";
+    db.query(query, [secret.base32, email])
+      .then((result) => {
+        if (result.affectedRows > 0) {
+          qr.toDataURL(secret.otpauth_url, (err, url) => {
+            if (err) {
+              console.error("QR Code Error:", err);
+              res.status(500).json({ error: err.message });
+            } else {
+              res.status(200).json({ message: "2FA enabled", qrCodeUrl: url });
+            }
+          });
+        } else {
+          res.status(400).json({ message: "Invalid email" });
+        }
+      })
+      .catch((err) => {
+        console.error("SQL Error:", err);
+        res.status(500).json({ error: err.message });
+      });
   } else {
-    res.status(400).json({ message: "User ID is required" });
+    res.status(400).json({ message: "Email is required" });
   }
 });
 
-// 2FA verification
-router.post("/login2fa", (req, res) => {
-  const { userId, code } = req.body;
-  if (userId && code) {
-    // Implementation for 2FA login verification
-    res.status(200).json({ message: "2FA login successful" });
+// Verify 2FA
+router.post("/verify2fa", (req, res) => {
+  const { email, code } = req.body;
+  if (email && code) {
+    const query = "SELECT 2fa_secret FROM users WHERE email = ?";
+    db.query(query, [email])
+      .then((result) => {
+        if (result.length > 0) {
+          const verified = speakeasy.totp.verify({
+            secret: result[0].twofa_secret,
+            encoding: "base32",
+            token: code,
+          });
+          if (verified) {
+            res.status(200).json({ message: "2FA verified successfully" });
+          } else {
+            res.status(400).json({ message: "Invalid 2FA code" });
+          }
+        } else {
+          res.status(400).json({ message: "Invalid email" });
+        }
+      })
+      .catch((err) => {
+        console.error("SQL Error:", err);
+        res.status(500).json({ error: err.message });
+      });
   } else {
-    res.status(400).json({ message: "User ID and code are required" });
+    res.status(400).json({ message: "Email and 2FA code are required" });
   }
 });
 
