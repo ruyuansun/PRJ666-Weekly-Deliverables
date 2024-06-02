@@ -76,6 +76,7 @@ export default function uploadProject(){
                         placeholder="Enter Description"
                         value={formData.description}
                         onChange={handleChange}
+                        required
                     />
                     <Input
                         className="mb-10"
@@ -84,6 +85,7 @@ export default function uploadProject(){
                         placeholder="Enter Price"
                         value={formData.price}
                         onChange={handleChange}
+                        required
                     />
                     <Input
                         className="mb-10"
@@ -92,12 +94,14 @@ export default function uploadProject(){
                         placeholder="Enter Your Location"
                         value={formData.location}
                         onChange={handleChange}
+                        required
                     />
                     <Input
                         className="mb-10"
                         type="file"
                         name="image"
                         onChange={handleChange}
+                        required
                     />
                     <button type="submit" className="bg-[#e3d4cb] text-black px-4 py-2 rounded-lg w-full">
                         Upload
