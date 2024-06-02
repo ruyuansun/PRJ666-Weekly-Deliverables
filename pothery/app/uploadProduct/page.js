@@ -41,8 +41,8 @@ export default function uploadProject(){
             form.append('image', formData.image);
         }
 
-        // Replace with your actual API endpoint
-        const apiEndpoint = 'https://yourapi.com/upload';
+        //URL for backend route
+        const apiEndpoint = '';
 
         fetch(apiEndpoint, {
             method: 'POST',
