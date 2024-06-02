@@ -1,27 +1,42 @@
-import React from "react";
+"use client";
 import IconLock from "./_components/IconLock";
-import Image from "next/image";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Enable2fa() {
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const userId = 1; // Assuming a logged-in user with ID 1
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
+  const [error, setError] = useState("");
+  const email = localStorage.getItem("userEmail");
+  const router = useRouter();
 
-    const response = await fetch("http://localhost:4000/api/enable2fa", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId }),
-    });
+  useEffect(() => {
+    async function fetchQrCode() {
+      try {
+        const response = await fetch("http://localhost:4000/api/enable2fa", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
 
-    const data = await response.json();
-    if (data.message === "2FA enabled") {
-      alert("2FA enabled successfully!");
-    } else {
-      alert("2FA enable failed: " + data.message);
+        const data = await response.json();
+        if (data.qrCodeUrl) {
+          setQrCodeUrl(data.qrCodeUrl);
+          setTimeout(() => {
+            router.push("/login2fa");
+          }, 3000); // Wait 3 seconds before redirecting
+        } else {
+          setError("Failed to enable 2FA: " + data.message);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setError("An error occurred while enabling 2FA.");
+      }
     }
-  }
+
+    fetchQrCode();
+  }, [email, router]);
 
   return (
     <div className="w-4/12 m-auto">
@@ -32,7 +47,16 @@ export default function Enable2fa() {
       <p className="text-center mb-5">
         Scan the following QR code to add your authentication app to the account
       </p>
-      <Image src="/qrcode.png" width={500} height={500} className="m-auto" />
+      {error && <p className="text-red-500">{error}</p>}
+      {qrCodeUrl && (
+        <img
+          src={qrCodeUrl}
+          width={500}
+          height={500}
+          className="m-auto"
+          alt="QR Code"
+        />
+      )}
     </div>
   );
 }

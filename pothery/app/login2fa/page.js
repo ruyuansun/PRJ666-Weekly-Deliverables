@@ -1,32 +1,43 @@
 "use client";
-
 import { Label } from "@/components/ui/label";
 import IconLock from "./_components/IconLock";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function Login2fa() {
   const [code, setCode] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const email = localStorage.getItem("userEmail");
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const userId = 1; // Assuming a logged-in user with ID 1
+    try {
+      const response = await fetch("http://localhost:4000/api/login2fa", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, code }),
+      });
 
-    const response = await fetch("http://localhost:4000/api/login2fa", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId, code }),
-    });
-
-    const data = await response.json();
-    if (data.message === "2FA login successful") {
-      alert("2FA login successful!");
-    } else {
-      alert("2FA login failed: " + data.message);
+      const data = await response.json();
+      if (data.message === "2FA login successful") {
+        alert("2FA login successful!");
+        // router.push("/dashboard"); // Change to the destination page
+      } else {
+        setError("2FA login failed: " + data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError("An error occurred during 2FA verification.");
     }
+  }
+
+  function codeChangeHandle(e) {
+    setCode(e.target.value);
   }
 
   return (
@@ -47,7 +58,8 @@ export default function Login2fa() {
         value={code}
         onChange={codeChangeHandle}
       />
-      <Button className="mt-10 w-full" onClick={submitCodehandle}>
+      {error && <p className="text-red-500">{error}</p>}
+      <Button className="mt-10 w-full" onClick={handleSubmit}>
         Confirm
       </Button>
     </div>
