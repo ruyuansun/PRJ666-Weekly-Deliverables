@@ -65,7 +65,9 @@ export default function uploadProject(){
         <div className="flex">
             <Sidemenu/>
             <div className="w-8/12">
+                
                 <form className="w-96 mx-auto mt-20" onSubmit={submitHandle}>
+                    <h2>Upload Product</h2>
                     <img src={previewImg}/>
                     <Input
                         className="my-10"
