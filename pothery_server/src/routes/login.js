@@ -1,4 +1,5 @@
 const db = require("../database/msql_interface");
+const crypto = require("../crypto/crypto");
 
 /* public code */
 
@@ -9,13 +10,15 @@ module.exports = {
 function login_post(router) {
 	router.post("/login", (req, res) => {
 	const { username, password } = req.body;
+
 	console.log("Received login request with:", { username, password });
+	
 	if (username && password) {
-	  	const query = "SELECT * FROM users WHERE email = ? AND password = ?";
-	  	db.query(query, [username, password])
+	  	const query = "SELECT password FROM users WHERE email = ?";
+	  	db.query(query, [username])
 		.then((result) => {
 			console.log("Query result:", result);
-			if (result.length > 0) {
+			if (result.length > 0 && crypto.hash_password_given_matches(password, result[0].password)) {
 				res.status(200).json({ message: "Login successful" });
 			} else {
 				res.status(401).json({ message: "Incorrect username or password" });

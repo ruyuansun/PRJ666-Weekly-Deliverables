@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.7.24, for osx11.1 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: pothery
+-- Host: 127.0.0.1    Database: pothery
 -- ------------------------------------------------------
--- Server version	8.3.0
+-- Server version	8.0.37
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,7 +21,7 @@
 
 DROP TABLE IF EXISTS `test_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `test_data` (
   `test_id` int NOT NULL AUTO_INCREMENT,
   `city` varchar(32) DEFAULT NULL,
@@ -46,7 +46,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE `users` (
   `2fa_enabled` tinyint(1) DEFAULT '0',
   `2fa_secret` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +63,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'test@example.com','password123',1,'ENWCIMDVIA7CIVDYPFKUSQ2SPFCCCKBP'),(2,'newuser@example.com','newpassword123',0,NULL),(3,'newuser2@example.com','newpassword',0,NULL);
+INSERT INTO `users` VALUES (1,'test@example.com','password123',1,'PJYGKSRDMFWHKJDPKFHGCPTQNFKEWUSG'),(2,'newuser@example.com','newpassword123',1,'NFSDAOJZPVDXO4LCFZCXWKTYMRSEQVC6'),(3,'newuser2@example.com','newpassword',0,NULL),(4,'tes4t@test.ca','$2b$10$zUmzHskKfYXM.Ddi2JLqSu8V03JpY5voUKYy/zNimB7GcADXkx0me',1,'OQ5HO22YPF5TSZC2HJ3UM4SJJV5UYKS2');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -76,4 +76,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-02 15:35:08
+-- Dump completed on 2024-06-02 17:51:38
