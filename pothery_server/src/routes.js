@@ -52,19 +52,17 @@ router.post("/login", (req, res) => {
 
 // Reset Password
 router.post("/resetPassword", (req, res) => {
-  const { currentPassword, newPassword } = req.body;
-  if (currentPassword && newPassword) {
-    const query = "UPDATE users SET password = ? WHERE password = ?";
-    db.query(query, [newPassword, currentPassword])
+  const { email, newPassword } = req.body;
+  if (email && newPassword) {
+    const query = "UPDATE users SET password = ? WHERE email = ?";
+    db.query(query, [newPassword, email])
       .then((result) => {
         if (result.affectedRows > 0) {
           res.status(200).json({ message: "Password reset successful" });
         } else {
           res
             .status(400)
-            .json({
-              message: "Password reset failed: Invalid current password",
-            });
+            .json({ message: "Password reset failed: Invalid email" });
         }
       })
       .catch((err) => {
@@ -72,7 +70,7 @@ router.post("/resetPassword", (req, res) => {
         res.status(500).json({ error: err.message });
       });
   } else {
-    res.status(400).json({ message: "Current and new password are required" });
+    res.status(400).json({ message: "Email and new password are required" });
   }
 });
 
