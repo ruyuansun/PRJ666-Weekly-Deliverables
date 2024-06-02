@@ -7,7 +7,7 @@ export default function ResetPassword() {
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
-    const currentPassword = event.target.currentPassword.value;
+    const email = event.target.email.value;
     const newPassword = event.target.newPassword.value;
 
     try {
@@ -17,7 +17,7 @@ export default function ResetPassword() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          currentPassword,
+          email,
           newPassword,
         }),
       });
@@ -44,10 +44,10 @@ export default function ResetPassword() {
         {error && <p className="text-red-500">{error}</p>}
         <input
           className="border rounded-md py-2 px-3 w-96"
-          type="password"
-          id="currentPassword"
-          name="currentPassword"
-          placeholder="current password"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="email"
         />
         <input
           className="border rounded-md py-2 px-3 w-96"
