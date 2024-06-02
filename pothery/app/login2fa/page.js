@@ -2,20 +2,31 @@
 
 import { Label } from "@/components/ui/label";
 import IconLock from "./_components/IconLock";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function Login2fa() {
   const [code, setCode] = useState("");
 
-  function codeChangeHandle(e) {
-    setCode(e.target.value);
-  }
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const userId = 1; // Assuming a logged-in user with ID 1
 
-  function submitCodehandle(e) {
-    // Submit code to the backend via post request
-    // Require path to backend
+    const response = await fetch("http://localhost:4000/api/login2fa", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, code }),
+    });
+
+    const data = await response.json();
+    if (data.message === "2FA login successful") {
+      alert("2FA login successful!");
+    } else {
+      alert("2FA login failed: " + data.message);
+    }
   }
 
   return (

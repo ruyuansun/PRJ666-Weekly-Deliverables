@@ -5,15 +5,23 @@ const db = require("./database/msql_interface");
 // User register
 router.post("/register", (req, res) => {
   const { email, password } = req.body;
-  const query = "INSERT INTO users (email, password) VALUES (?, ?)";
-  console.log("Query:", query);
-  console.log("Parameters:", [email, password]);
-  db.query(query, [email, password])
+  const checkUserQuery = "SELECT * FROM users WHERE email = ?";
+  const insertUserQuery = "INSERT INTO users (email, password) VALUES (?, ?)";
+
+  db.query(checkUserQuery, [email])
     .then((result) => {
-      res.status(201).json({ message: "User registered successfully" });
+      if (result.length > 0) {
+        res.status(409).json({ message: "User already exists" });
+      } else {
+        return db.query(insertUserQuery, [email, password]);
+      }
+    })
+    .then((result) => {
+      if (result) {
+        res.status(201).json({ message: "User registered successfully" });
+      }
     })
     .catch((err) => {
-      console.error("SQL Error:", err);
       res.status(500).json({ error: err.message });
     });
 });
@@ -21,14 +29,16 @@ router.post("/register", (req, res) => {
 // User login
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
+  console.log("Received login request with:", { username, password });
   if (username && password) {
     const query = "SELECT * FROM users WHERE email = ? AND password = ?";
     db.query(query, [username, password])
       .then((result) => {
+        console.log("Query result:", result);
         if (result.length > 0) {
           res.status(200).json({ message: "Login successful" });
         } else {
-          res.status(401).json({ message: "Invalid credentials" });
+          res.status(401).json({ message: "Incorrect username or password" });
         }
       })
       .catch((err) => {
@@ -43,27 +53,49 @@ router.post("/login", (req, res) => {
 // Reset Password
 router.post("/resetPassword", (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  const query = "UPDATE users SET password = ? WHERE password = ?";
-  db.query(query, [newPassword, currentPassword])
-    .then((result) => {
-      res.status(200).json({ message: "Password reset successful" });
-    })
-    .catch((err) => {
-      console.error("SQL Error:", err);
-      res.status(500).json({ error: err.message });
-    });
+  if (currentPassword && newPassword) {
+    const query = "UPDATE users SET password = ? WHERE password = ?";
+    db.query(query, [newPassword, currentPassword])
+      .then((result) => {
+        if (result.affectedRows > 0) {
+          res.status(200).json({ message: "Password reset successful" });
+        } else {
+          res
+            .status(400)
+            .json({
+              message: "Password reset failed: Invalid current password",
+            });
+        }
+      })
+      .catch((err) => {
+        console.error("SQL Error:", err);
+        res.status(500).json({ error: err.message });
+      });
+  } else {
+    res.status(400).json({ message: "Current and new password are required" });
+  }
 });
 
 // Enable 2FA
 router.post("/enable2fa", (req, res) => {
-  // Implementation for enabling 2FA
-  res.status(200).json({ message: "2FA enabled" });
+  const { userId } = req.body;
+  if (userId) {
+    // Implementation for enabling 2FA
+    res.status(200).json({ message: "2FA enabled" });
+  } else {
+    res.status(400).json({ message: "User ID is required" });
+  }
 });
 
 // 2FA verification
 router.post("/login2fa", (req, res) => {
-  // Implementation for 2FA login verification
-  res.status(200).json({ message: "2FA login successful" });
+  const { userId, code } = req.body;
+  if (userId && code) {
+    // Implementation for 2FA login verification
+    res.status(200).json({ message: "2FA login successful" });
+  } else {
+    res.status(400).json({ message: "User ID and code are required" });
+  }
 });
 
 module.exports = router;
