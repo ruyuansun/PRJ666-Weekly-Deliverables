@@ -10,37 +10,18 @@ app.use(cors());
 app.use(express.json());
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-  initialize();
-  return;
+    console.log(`Server running at http://localhost:${port}`);
+    initialize();
+    return;
 });
 
 function initialize() {
-  db_initialize();
-  initialize_routes();
-  return;
+    db_initialize();
+    routes.initialize_routes(app);
+    return;
 }
 
 function db_initialize() {
-  mysql_interface.connect();
-  return;
-}
-
-function initialize_routes() {
-  app.use("/api", routes); // Use the new routes
-  app.get("/api/data", get_api_test_data);
-  return;
-}
-
-function get_api_test_data(req, res) {
-  var query_string = "SELECT * FROM test_data";
-  mysql_interface
-    .query(query_string)
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((err) => {
-      res.json("error");
-    });
-  return;
+    mysql_interface.connect();
+    return;
 }

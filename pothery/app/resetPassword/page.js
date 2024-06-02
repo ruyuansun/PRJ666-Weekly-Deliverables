@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 
+import { BACKEND_URL } from '../constants';
+
 export default function ResetPassword() {
   const [error, setError] = useState("");
 
@@ -11,7 +13,7 @@ export default function ResetPassword() {
     const newPassword = event.target.newPassword.value;
 
     try {
-      const response = await fetch("http://localhost:4000/api/resetPassword", {
+      const response = await fetch(BACKEND_URL + "/api/resetPassword", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
