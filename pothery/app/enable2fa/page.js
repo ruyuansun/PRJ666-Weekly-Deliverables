@@ -3,6 +3,8 @@ import IconLock from "./_components/IconLock";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+import { BACKEND_URL } from '../constants';
+
 export default function Enable2fa() {
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [error, setError] = useState("");
@@ -12,7 +14,7 @@ export default function Enable2fa() {
   useEffect(() => {
     async function fetchQrCode() {
       try {
-        const response = await fetch("http://localhost:4000/api/enable2fa", {
+        const response = await fetch(BACKEND_URL + "/api/enable2fa", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
