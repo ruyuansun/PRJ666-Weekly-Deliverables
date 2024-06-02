@@ -16,19 +16,16 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
       if (data.message === "Login successful") {
         alert("Login successful!");
-      } else if (data.message === "Incorrect username or password") {
-        setError("Incorrect username or password");
+        localStorage.setItem("userEmail", username); // Store the user's email
+        window.location.href = "/enable2fa"; // Redirect to the 2FA enable page
       } else {
-        setError("Login failed: " + data.message);
+        setError(data.message);
       }
     } catch (error) {
       console.error("Error:", error);
