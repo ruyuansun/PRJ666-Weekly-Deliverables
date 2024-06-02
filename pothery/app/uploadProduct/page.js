@@ -4,7 +4,7 @@ import Sidemenu from "@/components/SideMenu";
 import { Input } from "@/components/ui/input";
 import React, { useState } from 'react';
 
-export default function uploadProject(){
+export default function uploadProduct(){
     const [formData, setFormData] = useState({
         description: '',
         price: '',
