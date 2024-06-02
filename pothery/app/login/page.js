@@ -1,6 +1,9 @@
 "use client";
 import React, { useState } from "react";
 
+import { BACKEND_URL } from '../constants';
+
+
 export default function Login() {
   const [error, setError] = useState("");
 
@@ -11,7 +14,8 @@ export default function Login() {
     const password = event.target.password.value;
 
     try {
-      const response = await fetch("http://localhost:4000/api/login", {
+      console.log(BACKEND_URL);
+      const response = await fetch(BACKEND_URL + "/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

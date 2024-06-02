@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+import { BACKEND_URL } from '../constants';
+
 export default function Login2fa() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
@@ -15,7 +17,7 @@ export default function Login2fa() {
   async function handleSubmit(event) {
     event.preventDefault();
     try {
-      const response = await fetch("http://localhost:4000/api/login2fa", {
+      const response = await fetch(BACKEND_URL + "/api/login2fa", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 
+import { BACKEND_URL } from '../constants';
+
 export default function Register() {
   const [error, setError] = useState("");
 
@@ -17,7 +19,7 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch("http://localhost:4000/api/register", {
+      const response = await fetch(BACKEND_URL + "/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
