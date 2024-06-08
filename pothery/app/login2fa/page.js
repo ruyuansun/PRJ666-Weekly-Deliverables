@@ -12,11 +12,11 @@ export default function Login2fa() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-  const email = localStorage.getItem("userEmail");
 
   async function handleSubmit(event) {
     event.preventDefault();
     try {
+      const email = localStorage.getItem("userEmail");
       const response = await fetch(BACKEND_URL + "/api/login2fa", {
         method: "POST",
         headers: {
@@ -28,7 +28,7 @@ export default function Login2fa() {
       const data = await response.json();
       if (data.message === "2FA login successful") {
         alert("2FA login successful!");
-        // router.push("/dashboard"); // Change to the destination page
+        router.push("/dashboard"); // Change to the destination page
       } else {
         setError("2FA login failed: " + data.message);
       }
