@@ -14,26 +14,29 @@ export default function Login() {
     const password = event.target.password.value;
 
     try {
-      console.log(BACKEND_URL);
-      const response = await fetch(BACKEND_URL + "/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+    	console.log(BACKEND_URL);
+      	const response = await fetch(BACKEND_URL + "/api/login", {
+        	method: "POST",
+        	headers: {
+          	"Content-Type": "application/json",
+        	},
+        	body: JSON.stringify({ username, password }),
+      	});
 
-      const data = await response.json();
-      if (data.message === "Login successful") {
-        alert("Login successful!");
-        localStorage.setItem("userEmail", username); // Store the user's email
-        window.location.href = "/enable2fa"; // Redirect to the 2FA enable page
-      } else {
-        setError(data.message);
-      }
+		if (response.status == 310) {
+			alert("Login successful!");
+			localStorage.setItem("userEmail", username); // Store the user's email
+			window.location.href = "/login2fa"; // Redirect to the 2FA enable page
+		} else if(response.status == 311) {
+			alert("Login successful!");
+			window.location.href = "/dashboard"; // Redirect to the homepage
+		}  else {
+			const data = await response.json();
+			setError(data.message);
+		}
     } catch (error) {
-      console.error("Error:", error);
-      setError("An error occurred during login.");
+    	console.error("Error:", error);
+      	setError("An error occurred during login.");
     }
   }
 
