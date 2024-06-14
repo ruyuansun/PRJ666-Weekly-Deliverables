@@ -14,7 +14,7 @@ function enable2fa_post(router) {
         const email = req.body.email;
         if (email) {
             const secret = speakeasy.generateSecret({ length: 20 });
-            const query = "UPDATE users SET 2fa_enabled = 1, 2fa_secret = ? WHERE email = ?";
+            const query = "UPDATE users SET MFA_enabled = 1, 2fa_secret = ? WHERE email = ?";
             
             db.query(query, [secret.base32, email])
             .then((result) => {
@@ -28,7 +28,7 @@ function enable2fa_post(router) {
                     }
                 });
                 } else {
-                res.status(400).json({ message: "Invalid email" });
+                    res.status(400).json({ message: "Invalid email" });
                 }
             })
             .catch((err) => {
