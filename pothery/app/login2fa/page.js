@@ -1,12 +1,12 @@
 "use client";
-import { Label } from "@/components/ui/label";
+import { Label } from "../../components/ui/label";
 import IconLock from "./_components/IconLock";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 
-import { BACKEND_URL } from '../constants';
+import { BACKEND_URL } from "../constants";
 
 export default function Login2fa() {
   const [code, setCode] = useState("");

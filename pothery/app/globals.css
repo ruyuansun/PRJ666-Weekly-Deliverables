@@ -66,4 +66,14 @@
   }
 }
 
+#profile-background {
+  height: 500px;
+}
 
+#profile-photo {
+  transform: translate(0, -50%);
+}
+
+#post-image {
+  height: 600px;
+}
