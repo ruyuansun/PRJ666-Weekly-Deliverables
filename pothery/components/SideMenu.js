@@ -6,7 +6,7 @@ export default function Sidemenu(){
             <li><a href="/events">Events</a></li>
             <li><a href="/message">Messages</a></li>
             <li><a href="/subscription">Subscription</a></li>
-            <li><a href="/documents">Documents</a></li>
+            <li><a href="/uploadDocument">Documents</a></li>
             <li><a href="/bank">Bank</a></li>
             <li><a href="/marketplace">Marketplace</a></li>
         </ol>
