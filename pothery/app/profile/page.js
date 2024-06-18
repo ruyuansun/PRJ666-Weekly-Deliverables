@@ -13,13 +13,10 @@ const profPhotoWidth = 300;
 const profPhotoHeight = 300;
 
 export default function Profile() {
-  // TODO: save the bgImageUrl and profPhotoUrl for the user as their
-  //       background image url and profile photo url in the database.
   const [bgImageUrl, setBgImageUrl] = useState(
     "/placeholders/background-image.jpg"
   );
   const [profPhotoUrl, setProfPhotoUrl] = useState("/placeholders/profile.jpg");
-
   const [currentImage, setCurrentImage] = useState("");
   const [isModalUploadClose, setIsModalUploadClose] = useState(true);
 
@@ -38,7 +35,7 @@ export default function Profile() {
       <div className="flex">
         <Sidemenu />
 
-        <div className="w-full px-10 ">
+        <div className="w-full px-10">
           <div
             className="w-full overflow-hidden relative"
             id="profile-background"
