@@ -7,7 +7,7 @@ const register = require("./routes/register");
 const reset_password = require("./routes/reset_password");
 const verify2fa = require("./routes/verify2fa");
 const test_data = require("./routes/test_data");
-
+const documents = require("./routes/documents")
 
 /* public code */
 
@@ -21,8 +21,13 @@ function initialize_routes(app) {
     register.register_post(router);
 	login.login_post(router);
 	reset_password.reset_password_post(router);
-	test_data.test_data_post(router);
-	
-	app.use("/api", router); // Use the new routes
+	documents.document_list_post(router);
+	documents.document_delete_post(router);	
+	documents.document_add_post(router);
+
+	test_data.test_data_get(router);	// For testing
+
+
+	app.use("/api", router); 			// Use the new routes
 	return;
 }
