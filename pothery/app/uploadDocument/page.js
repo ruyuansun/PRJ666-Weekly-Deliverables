@@ -8,12 +8,12 @@ import axios from 'axios'
 
 import { BACKEND_URL } from "../constants";
 
+
+
 export default function UploadDocument() {
-	const [newDoc, setNewDoc] = useState();
 	const [docList, setDocList] = useState([]);
 
-	// Gets all documents that are associated with the current user
-	useEffect(() => {
+	function query_document_list() {
 		const email = localStorage.getItem("userEmail");
 		fetch(BACKEND_URL + "/api/documents/get", {
 			method: "POST",
@@ -26,41 +26,51 @@ export default function UploadDocument() {
 		.then((data) => {
 			setDocList(data);
 		})
-	}, []);
-
-	const listDocuments = docList.map((d) => 
-		<DocumentDOM
-			key={d.id}
-			type={d.type}
-			name={d.name}
-			size={d.size + "MB"}
-			id={d.id}>
-		</DocumentDOM>
-	);
-
+	}
+	
 	function handleNewDoc() {
 		document.getElementById("fileInput").click();
 	}
 
 	function handleFileChange(e) {
 		if ( e.target.files[0]) {
-			setNewDoc(e.target.files[0]);
-			console.log(newDoc);
-
-			const formData = new FormData();
-			formData.append("file", newDoc);
 			
-			axios.post(BACKEND_URL + "/api/documents/add", formData)
+			const data = new FormData() ;
+			data.append('file', e.target.files[0]);
 
-			.then((response) => response.json())
-			.then((data) => {
-				console.log("Success:", data);
-			})
+			axios.post(BACKEND_URL + "/api/documents/add", data)
+			.then((response) => {
+				if (response.status == 200) {
+					console.log("Success:", response);
+					query_document_list();
+				} else {
+					console.log("Fail:", response);
+				}			})
 			.catch((error) => {
 				console.error("Error:", error);
 			});
 		}
 	}
+
+
+	// Gets all documents that are associated with the current user
+	useEffect(() => {
+		query_document_list();
+	}, []);
+
+	var listDocuments;
+	if (docList.length > 0)
+	{
+		listDocuments = docList.map((d) => 
+		<DocumentDOM
+			key={d.id}
+			type={d.type}
+			name={d.name}
+			size={d.size + "MB"}
+			id={d.id}>
+		</DocumentDOM>);
+	}
+	
 
 	return (
 		<div className="w-11/12 mx-auto min-h-screen">
