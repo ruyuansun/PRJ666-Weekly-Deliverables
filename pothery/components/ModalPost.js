@@ -1,4 +1,4 @@
-import { Image } from 'react-native';
+import { Image } from "react";
 import { Button } from "./ui/button";
 
 export default function ModalPost({ setIsOpen }) {

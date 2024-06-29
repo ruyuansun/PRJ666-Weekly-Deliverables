@@ -7,7 +7,7 @@ export default function UploadImageButton({ className, setState }) {
       endpoint="imageUploader"
       onClientUploadComplete={(res) => {
         // Do something with the response
-        setState(res[0].url);
+        setState(res[0].url.split("/").pop());
       }}
       onUploadError={(error) => {
         // Do something with the error.

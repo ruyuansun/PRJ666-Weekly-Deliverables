@@ -1,11 +1,10 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidemenu from "../../components/SideMenu";
 import { Button } from "../../components/ui/button";
 import Image from "next/image";
 import ModalUpload from "../../components/ModalUpload";
-import Post from "../../components/Post";
+import { useRouter } from "next/navigation";
 
 const bgImgWidth = 1000;
 const bgImgHeight = 500;
@@ -13,15 +12,75 @@ const profPhotoWidth = 300;
 const profPhotoHeight = 300;
 
 export default function Profile() {
-  // TODO: save the bgImageUrl and profPhotoUrl for the user as their
-  //       background image url and profile photo url in the database.
   const [bgImageUrl, setBgImageUrl] = useState(
     "/placeholders/background-image.jpg"
   );
   const [profPhotoUrl, setProfPhotoUrl] = useState("/placeholders/profile.jpg");
-
+  const [bio, setBio] = useState("");
+  const [email, setEmail] = useState("");
   const [currentImage, setCurrentImage] = useState("");
   const [isModalUploadClose, setIsModalUploadClose] = useState(true);
+  const [message, setMessage] = useState("");
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const userEmail = localStorage.getItem("userEmail");
+    if (userEmail) {
+      setEmail(userEmail);
+      fetchProfile(userEmail);
+    }
+  }, []);
+
+  async function fetchProfile(email) {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/profile?email=${email}`
+      );
+      const data = await response.json();
+      console.log("Fetched profile data:", data); // Log profile data
+      if (data.email) {
+        setEmail(data.email);
+        setBio(data.bio || "");
+        setProfPhotoUrl(
+          data.profile_picture
+            ? `https://utfs.io/f/${data.profile_picture}`
+            : "/placeholders/profile.jpg"
+        );
+      } else {
+        setMessage("User not found");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage("An error occurred while fetching profile data.");
+    }
+  }
+
+  async function handleProfileUpdate() {
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("bio", bio);
+    formData.append("profile_picture", profPhotoUrl);
+
+    try {
+      const response = await fetch("http://localhost:4000/api/profile", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.message === "Profile updated successfully") {
+        console.log("Profile updated successfully"); // Log successful update
+        setMessage("Profile updated successfully");
+        fetchProfile(email); // Fetch the updated profile data
+      } else {
+        setMessage("Profile update failed: " + data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage("An error occurred while updating profile.");
+    }
+  }
 
   function handleProfileClick() {
     setCurrentImage("profile");
@@ -37,8 +96,7 @@ export default function Profile() {
     <div className="w-11/12 mx-auto min-h-screen">
       <div className="flex">
         <Sidemenu />
-
-        <div className="w-full px-10 ">
+        <div className="w-full px-10">
           <div
             className="w-full overflow-hidden relative"
             id="profile-background"
@@ -71,9 +129,24 @@ export default function Profile() {
             </div>
           </div>
 
+          {/* User bio */}
+          <div className="mt-4">
+            <textarea
+              className="border p-2 w-full"
+              placeholder="Enter your bio"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+            />
+          </div>
+
           {/* Start a post */}
-          <div className="mt-12" id="construct-post">
-            <Button className="w-full border border-black">Start a post</Button>
+          <div className="mt-4" id="construct-post">
+            <Button
+              className="w-full border border-black"
+              onClick={handleProfileUpdate}
+            >
+              Update Profile
+            </Button>
           </div>
 
           {/* User's news feed */}

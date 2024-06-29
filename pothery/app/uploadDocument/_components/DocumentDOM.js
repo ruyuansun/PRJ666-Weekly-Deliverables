@@ -1,17 +1,22 @@
 import { Button } from "../../../components/ui/button";
 import { useState } from "react";
+import { BACKEND_URL } from "../../constants";
 
 export default function DocumentDOM(props) {
-  const apiEndpoint = ""; //link to backend
   const [showDoc, setShowDoc] = useState(true);
 
   function handleRemove() {
-    fetch(apiEndpoint, {
+    const email = localStorage.getItem("userEmail");
+    console.log(props);
+    fetch(BACKEND_URL + "/api/documents/delete", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ doc_id: props.docId }),
+      body: JSON.stringify({
+        id: props.id,
+        email: email,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -32,7 +37,7 @@ export default function DocumentDOM(props) {
           <div className="w-4/12">
             <div>
               <p>Type: {props.type}</p>
-              <p>Name: {props.docName}</p>
+              <p>Name: {props.name}</p>
               <p>Size: {props.size}</p>
             </div>
           </div>
