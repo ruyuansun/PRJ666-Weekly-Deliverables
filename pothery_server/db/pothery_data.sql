@@ -53,6 +53,8 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `MFA_enabled` tinyint(1) DEFAULT '0',
   `2fa_secret` varchar(255) DEFAULT NULL,
+  `profile_picture` varchar(255) DEFAULT NULL,
+  `bio` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -63,7 +65,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'test@example.com','password123',1,'PJYGKSRDMFWHKJDPKFHGCPTQNFKEWUSG'),(2,'newuser@example.com','newpassword123',1,'NFSDAOJZPVDXO4LCFZCXWKTYMRSEQVC6'),(3,'newuser2@example.com','newpassword',0,NULL),(4,'tes4t@test.ca','$2b$10$zUmzHskKfYXM.Ddi2JLqSu8V03JpY5voUKYy/zNimB7GcADXkx0me',1,'ERJHQQZRIZFC63KLKRMDCYSMMQRUWMSS'),(5,'test5@test.ca','$2b$10$q02/peMdME5SO6b.NF2PcOK6NiHlCFxdVMhzZMvmKGyrSXCpLnch2',1,NULL),(6,'test51@test.ca','$2b$10$jQ4FtklRYtDoLr6afdxykeEB9W/.fdXopXhRdZM38o/qRcuS9Q98q',1,'PVKDKI3EKN3WC2B6NNICYP2CJJKDMRDH');
+INSERT INTO `users` VALUES (1,'test@example.com','password123',1,'PJYGKSRDMFWHKJDPKFHGCPTQNFKEWUSG', NULL, NULL),(2,'newuser@example.com','newpassword123',1,'NFSDAOJZPVDXO4LCFZCXWKTYMRSEQVC6', NULL, NULL),(3,'newuser2@example.com','newpassword',0,NULL, NULL, NULL),(4,'tes4t@test.ca','$2b$10$zUmzHskKfYXM.Ddi2JLqSu8V03JpY5voUKYy/zNimB7GcADXkx0me',1,'ERJHQQZRIZFC63KLKRMDCYSMMQRUWMSS', NULL, NULL),(5,'test5@test.ca','$2b$10$q02/peMdME5SO6b.NF2PcOK6NiHlCFxdVMhzZMvmKGyrSXCpLnch2',1,NULL, NULL, NULL),(6,'test51@test.ca','$2b$10$jQ4FtklRYtDoLr6afdxykeEB9W/.fdXopXhRdZM38o/qRcuS9Q98q',1,'PVKDKI3EKN3WC2B6NNICYP2CJJKDMRDH', NULL, NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
