@@ -9,61 +9,62 @@ import { Button } from "../../components/ui/button";
 import { BACKEND_URL } from "../constants";
 
 export default function Login2fa() {
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
-  const router = useRouter();
+	const [code, setCode] = useState("");
+	const [error, setError] = useState("");
+	const router = useRouter();
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-    try {
-      const email = localStorage.getItem("userEmail");
-      const response = await fetch(BACKEND_URL + "/api/login2fa", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, code }),
-      });
+	async function handleSubmit(event) {
+		event.preventDefault();
+		try {
+		const email = localStorage.getItem("userEmail");
+		const response = 
+			await fetch(BACKEND_URL + "/api/login2fa", {
+				method: "POST",
+				headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ email, code }),
+		});
 
-      const data = await response.json();
-      if (data.message === "2FA login successful") {
-        alert("2FA login successful!");
-        router.push("/dashboard"); // Change to the destination page
-      } else {
-        setError("2FA login failed: " + data.message);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setError("An error occurred during 2FA verification.");
-    }
-  }
+		const data = await response.json();
+		if (data.message === "2FA login successful") {
+			alert("2FA login successful!");
+			router.push("/dashboard"); // Change to the destination page
+		} else {
+			setError("2FA login failed: " + data.message);
+		}
+		} catch (error) {
+		console.error("Error:", error);
+		setError("An error occurred during 2FA verification.");
+		}
+	}
 
-  function codeChangeHandle(e) {
-    setCode(e.target.value);
-  }
+	function codeChangeHandle(e) {
+		setCode(e.target.value);
+	}
 
-  return (
-    <div className="w-4/12 m-auto">
-      <h1 className="flex text-zinc-700 text-4xl justify-center items-center mb-10">
-        {" "}
-        <IconLock /> 2 Factor Authentication
-      </h1>
-      <p className="text-center mb-5">
-        Enter the 6 digit code on your authenticator app associated with this
-        account.
-      </p>
-      <Label htmlFor="code">Code: </Label>
-      <Input
-        type="text"
-        id="code"
-        placeholder="(6 digit code)"
-        value={code}
-        onChange={codeChangeHandle}
-      />
-      {error && <p className="text-red-500">{error}</p>}
-      <Button className="mt-10 w-full" onClick={handleSubmit}>
-        Confirm
-      </Button>
-    </div>
-  );
+	return (
+		<div className="w-4/12 m-auto">
+		<h1 className="flex text-zinc-700 text-4xl justify-center items-center mb-10">
+			{" "}
+			<IconLock /> 2 Factor Authentication
+		</h1>
+		<p className="text-center mb-5">
+			Enter the 6 digit code on your authenticator app associated with this
+			account.
+		</p>
+		<Label htmlFor="code">Code: </Label>
+		<Input
+			type="text"
+			id="code"
+			placeholder="(6 digit code)"
+			value={code}
+			onChange={codeChangeHandle}
+		/>
+		{error && <p className="text-red-500">{error}</p>}
+		<Button className="mt-10 w-full" onClick={handleSubmit}>
+			Confirm
+		</Button>
+		</div>
+	);
 }
