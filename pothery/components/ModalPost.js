@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { Image } from "react";
-=======
-import { Image } from 'react';
->>>>>>> ruyuan
 import { Button } from "./ui/button";
 
 export default function ModalPost({ setIsOpen }) {
