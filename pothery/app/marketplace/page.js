@@ -19,6 +19,7 @@ export default function Marketplace() {
           <Product userProfileUrl={profPhotoUrl} postImageUrl={bgImageUrl} />
           <Product userProfileUrl={profPhotoUrl} postImageUrl={bgImageUrl} />
           <Product userProfileUrl={profPhotoUrl} postImageUrl={bgImageUrl} />
+          <p>Hello</p>
         </div>
       </div>
     </div>
