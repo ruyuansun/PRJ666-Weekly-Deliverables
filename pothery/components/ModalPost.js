@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Image } from "react";
-=======
 import Image from "next/image";
->>>>>>> 153ca2c (Fixed module not found when importing Image component from react-native)
 import { Button } from "./ui/button";
 
 export default function ModalPost({ setIsOpen }) {
