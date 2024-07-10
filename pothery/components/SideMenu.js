@@ -38,6 +38,12 @@ export default function Sidemenu() {
         <li>
           <a href="/marketplace">Marketplace</a>
         </li>
+        <li>
+          <a href="/shoppingCart">Cart</a>
+        </li>
+        <li>
+          <a href="/myProduct">Products</a>
+        </li>
       </ol>
       <div className="flex content-between mt-10 gap-10">
         <a href="/settings">Settings</a>
