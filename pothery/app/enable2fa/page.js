@@ -14,19 +14,18 @@ export default function Enable2fa() {
 	useEffect(() => {
 		async function fetchQrCode() {
 		try {
-			const email = localStorage.getItem("userEmail");
+			const token = localStorage.getItem('token');
 			const response = await fetch(BACKEND_URL + "/api/enable2fa", {
 				method: "POST",
 				headers: {
-					"Content-Type": "application/json",
+					"Authorization": 'Poth ' + token
 				},
-				body: JSON.stringify({ email }),
 			});
 
 			const data = await response.json();
 			if (data.qrCodeUrl) {
 				setQrCodeUrl(data.qrCodeUrl);
-				setTimeout(() => { router.push("/login2fa"); }, 3000); // Wait 3 seconds before redirecting
+				setTimeout(() => { router.push("/login2fa"); }, 10000); // Wait 3 seconds before redirecting
 			} else {
 				setError("Failed to enable 2FA: " + data.message);
 			}

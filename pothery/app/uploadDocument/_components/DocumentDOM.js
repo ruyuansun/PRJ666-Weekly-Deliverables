@@ -6,16 +6,15 @@ export default function DocumentDOM(props) {
   const [showDoc, setShowDoc] = useState(true);
 
   function handleRemove() {
-    const email = localStorage.getItem("userEmail");
-    console.log(props);
+    const token = localStorage.getItem('token');
     fetch(BACKEND_URL + "/api/documents/delete", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": 'Poth ' + token
       },
       body: JSON.stringify({
         id: props.id,
-        email: email,
       }),
     })
       .then((response) => response.json())
