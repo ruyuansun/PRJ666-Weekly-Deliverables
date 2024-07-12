@@ -16,20 +16,20 @@ export default function Login2fa() {
 	async function handleSubmit(event) {
 		event.preventDefault();
 		try {
-		const email = localStorage.getItem("userEmail");
-		const response = 
-			await fetch(BACKEND_URL + "/api/login2fa", {
-				method: "POST",
-				headers: {
+		const uid = localStorage.getItem("uid");
+		const response =  await fetch(BACKEND_URL + "/api/verify2fa", {
+			method: "POST",
+			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ email, code }),
+			body: JSON.stringify({ uid, code }),
 		});
 
 		const data = await response.json();
-		if (data.message === "2FA login successful") {
+		if (response.status == 200) {
 			alert("2FA login successful!");
-			router.push("/dashboard"); // Change to the destination page
+			localStorage.setItem("token", data.accessToken);
+			router.push("/profile"); // Change to the destination page
 		} else {
 			setError("2FA login failed: " + data.message);
 		}

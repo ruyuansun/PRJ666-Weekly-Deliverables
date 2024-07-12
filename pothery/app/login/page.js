@@ -18,20 +18,22 @@ export default function Login() {
       	const response = await fetch(BACKEND_URL + "/api/login", {
         	method: "POST",
         	headers: {
-          	"Content-Type": "application/json",
+          		"Content-Type": "application/json",
         	},
         	body: JSON.stringify({ username, password }),
       	});
 
+		const data = await response.json();
+
 		if (response.status == 310) {
 			alert("Login successful!");
-			localStorage.setItem("userEmail", username); // Store the user's email
-			window.location.href = "/login2fa"; // Redirect to the 2FA enable page
+			localStorage.setItem("token", data.accessToken);
+			window.location.href = "/profile"; // Redirect to the homepage
 		} else if(response.status == 311) {
+			localStorage.setItem("uid", data.uid);
+			window.location.href = "/login2fa"; // Redirect to the 2FA enable page
 			alert("Login successful!");
-			window.location.href = "/dashboard"; // Redirect to the homepage
 		}  else {
-			const data = await response.json();
 			setError(data.message);
 		}
     } catch (error) {

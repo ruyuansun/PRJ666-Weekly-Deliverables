@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button";
 import Image from "next/image";
 import ModalUpload from "../../components/ModalUpload";
 import { useRouter } from "next/navigation";
+import { BACKEND_URL } from "../constants";
 
 const bgImgWidth = 1000;
 const bgImgHeight = 500;
@@ -34,9 +35,12 @@ export default function Profile() {
 
   async function fetchProfile(email) {
     try {
-      const response = await fetch(
-        `http://localhost:4000/api/profile?email=${email}`
-      );
+      const response = await fetch(BACKEND_URL + "/api/profile?email=${email}", {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": 'Poth ' + token
+        }
+      });
       const data = await response.json();
       console.log("Fetched profile data:", data); // Log profile data
       if (data.email) {

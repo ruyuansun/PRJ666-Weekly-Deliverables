@@ -1,4 +1,6 @@
 const db = require("../database/msql_interface");
+const crypto = require("../crypto/crypto");
+
 const multer = require("multer");
 const path = require("path");
 
@@ -19,7 +21,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 function profile_routes(router) {
-  router.get("/profile", (req, res) => {
+  router.get("/profile", crypto.authorize_token, (req, res) => {
     const email = req.query.email;
     if (!email) {
       return res.status(400).json({ message: "Email is required" });

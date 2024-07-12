@@ -13,16 +13,19 @@ export default function UploadDocument() {
 
   function query_document_list() {
     const email = localStorage.getItem("userEmail");
+    const token = localStorage.getItem('token');
     fetch(BACKEND_URL + "/api/documents/get", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": 'Poth ' + token
       },
       body: JSON.stringify({ email }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setDocList(data);
+      .then((response) => {
+        // Redirect to login
+        if (response.status == 403) { window.location.href = "/login"; }
+        response.json().then((data) => { setDocList(data); });
       });
   }
 
@@ -34,20 +37,27 @@ export default function UploadDocument() {
     if (e.target.files[0]) {
       const data = new FormData();
       data.append("file", e.target.files[0]);
+      const token = localStorage.getItem('token');
 
-      axios
-        .post(BACKEND_URL + "/api/documents/add", data)
-        .then((response) => {
-          if (response.status == 200) {
-            console.log("Success:", response);
-            query_document_list();
-          } else {
-            console.log("Fail:", response);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+
+      fetch(BACKEND_URL + "/api/documents/add", {
+        method: "POST",
+        headers: {
+          "Authorization": 'Poth ' + token
+        },
+        body: data,
+      })
+      .then((response) => {
+        if (response.status == 200) {
+          console.log("Success:", response);
+          query_document_list();
+        } else {
+          console.log("Fail:", response);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
     }
   }
 
