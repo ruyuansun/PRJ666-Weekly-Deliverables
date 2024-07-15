@@ -30,10 +30,12 @@ export default function Register() {
         }),
       });
 
+      console.log(response);
       const data = await response.json();
-      if (data.message === "User registered successfully") {
+      if (response.status == 201) {
         alert("Registration successful!");
-      } else if (data.message === "User already exists") {
+        window.location.href = "/login"; // Redirect to login
+      } else if (response.status == 409) {
         alert("Registration failed: User already exists");
       } else {
         alert("Registration failed: " + data.message);
