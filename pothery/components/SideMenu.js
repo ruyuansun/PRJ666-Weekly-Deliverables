@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Sidemenu() {
   const [profPhotoUrl, setProfPhotoUrl] = useState("/placeholders/profile.jpg");
@@ -18,36 +19,36 @@ export default function Sidemenu() {
           </a>
         </li>
         <li>
-          <a href="/home">Home</a>
+          <Link href="/home">Home</Link>
         </li>
         <li>
-          <a href="/events">Events</a>
+          <Link href="/events">Events</Link>
         </li>
         <li>
-          <a href="/message">Messages</a>
+          <Link href="/message">Messages</Link>
         </li>
         <li>
-          <a href="/subscription">Subscription</a>
+          <Link href="/subscription">Subscription</Link>
         </li>
         <li>
-          <a href="/uploadDocument">Documents</a>
+          <Link href="/uploadDocument">Documents</Link>
         </li>
         <li>
-          <a href="/bank">Bank</a>
+          <Link href="/bank">Bank</Link>
         </li>
         <li>
-          <a href="/marketplace">Marketplace</a>
+          <Link href="/marketplace">Marketplace</Link>
         </li>
         <li>
-          <a href="/shoppingCart">Cart</a>
+          <Link href="/shoppingCart">Cart</Link>
         </li>
         <li>
-          <a href="/myProduct">Products</a>
+          <Link href="/myProduct">Products</Link>
         </li>
       </ol>
       <div className="flex content-between mt-10 gap-10">
-        <a href="/settings">Settings</a>
-        <a href="/help">Help</a>
+        <Link href="/settings">Settings</Link>
+        <Link href="/help">Help</Link>
       </div>
     </div>
   );
