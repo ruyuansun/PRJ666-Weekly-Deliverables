@@ -37,7 +37,7 @@ function payment_post(router) {
     ])
       .then((result) => {
         if (result) {
-          res.status(200).json({ message: "Payment processed successfully" });
+          res.status(200);
         }
       })
       .catch((err) => {

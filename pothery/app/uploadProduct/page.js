@@ -3,6 +3,7 @@
 import Sidemenu from "../../components/SideMenu";
 import { Input } from "../../components/ui/input";
 import React, { useState } from "react";
+import { BACKEND_URL } from '../constants';
 
 export default function uploadProduct() {
   const [formData, setFormData] = useState({
@@ -30,25 +31,33 @@ export default function uploadProduct() {
     }
   }
 
-  function submitHandle(event) {
+  async function submitHandle(event) {
     event.preventDefault();
 
     const form = new FormData();
-    form.append("description", formData.description);
+    form.append("product_name", formData.description);
     form.append("price", formData.price);
     form.append("location", formData.location);
     if (formData.image) {
-      form.append("image", formData.image);
+      //form.append("image", formData.image);
     }
 
-    //URL for backend route
-    const apiEndpoint = "";
-
-    fetch(apiEndpoint, {
+    const token = localStorage.getItem('token');
+    const response = await fetch(BACKEND_URL + "/api/addProd", {
       method: "POST",
-      body: form,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": 'Poth ' + token
+      },
+      body: JSON.stringify({
+        product_name: formData.description,
+        price: formData.price,
+        location: formData.location
+      }),
     })
-      .then((response) => response.json())
+
+    if (response.status == 403) { window.location.href = "/login"; } 
+      response.json()
       .then((data) => {
         console.log("Success:", data);
         // Handle success (e.g., show a success message, redirect, etc.)

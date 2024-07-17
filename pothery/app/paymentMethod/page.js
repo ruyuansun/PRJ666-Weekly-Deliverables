@@ -30,7 +30,7 @@ export default function paymentMethod() {
   const [cardNumber,setCardNumber] = useState("")
   const [cardExpiry,setCardExpiry] = useState("")
   const [error, setError] = useState("");
-  const [paymentMethodData,setPaymentMethodData] = useState([])
+  const [paymentMethodData, setPaymentMethodData] = useState([])
 
   //get all payment method
   async function getPaymentMethods() {
@@ -63,6 +63,19 @@ export default function paymentMethod() {
   useEffect(()=>{
     getPaymentMethods()
   },[])
+
+  function getCardName(internalName) {
+    switch (internalName){
+      case "visacard":
+        return "Visa";
+      case "amex":
+        return "American Express";
+      case "master":
+        return "Mastercard";
+      case "debit":
+        return "Debit Card"
+    }
+  }
 
 
   async function handleSubmit(event) {
@@ -121,7 +134,7 @@ export default function paymentMethod() {
                 name={method.name}
                 cardExpiry={method.exp_month + "/" + method.exp_year}
                 cardNumber={method.card_number}
-                cardType={method.payment_type}
+                cardType={getCardName(method.payment_type)}
                 img={method.payment_type}/>
               })}
           </div>
