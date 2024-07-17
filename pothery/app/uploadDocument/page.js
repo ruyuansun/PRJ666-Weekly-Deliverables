@@ -3,8 +3,7 @@
 import Sidemenu from "../../components/SideMenu";
 import { Button } from "../../components/ui/button";
 import DocumentDOM from "./_components/DocumentDOM";
-import React, { useState, useEffect, createRef } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 
 import { BACKEND_URL } from "../constants";
 
