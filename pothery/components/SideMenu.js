@@ -33,7 +33,7 @@ export default function Sidemenu() {
           <a href="/uploadDocument">Documents</a>
         </li>
         <li>
-          <a href="/bank">Bank</a>
+          <a href="/paymentMethod">Bank</a>
         </li>
         <li>
           <a href="/marketplace">Marketplace</a>
