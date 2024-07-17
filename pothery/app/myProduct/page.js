@@ -1,9 +1,40 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Sidemenu from "../../components/SideMenu";
 import Product from "./_component/Product";
+import { BACKEND_URL } from '../constants';
 
 export default function MyProduct() {
+  const [products, setProducts] = useState([])
+
+
+  // Get products
+  async function getProducts() {
+
+    const token = localStorage.getItem('token');
+    const response = await fetch(BACKEND_URL + "/api/getProd", {
+      method: "GET",
+      headers: {
+        "Authorization": 'Poth ' + token
+      },
+    });
+
+    if (response.status == 403) { window.location.href = "/login"; }
+
+    if (response.status == 200) {
+      let productData = await response.json();
+      setProducts(productData);
+    } else {
+      const data = await response.json();
+      setError(data.message);
+    }    
+  }
+
+  useEffect(()=>{
+    getProducts()
+  },[])
+
   return (
     <div className="w-11/12 mx-auto min-h-screen">
       <div className="flex">
@@ -21,18 +52,14 @@ export default function MyProduct() {
 
           {/* List of my products */}
           <section className="grid grid-cols-2 gap-10">
-            <Product
-              imgSrc="/"
-              name="Product Name"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-              price="25"
-            />
-            <Product
-              imgSrc="/"
-              name="Product Name"
-              desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-              price="25"
-            />
+          {products && products.map((method)=>{
+              return <Product 
+                imgSrc="/"
+                name={method.product_name}
+                desc={method.product_name}
+                price={method.price}
+                location={method.location}/>
+          })}
           </section>
         </div>
       </div>

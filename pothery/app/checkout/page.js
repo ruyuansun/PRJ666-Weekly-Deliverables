@@ -23,7 +23,7 @@ export default function checkout() {
     var formData = new FormData(formInfo);
 
     try {
-      const response = await fetch(BACKEND_URL + "/api/addPaymentMethod", {
+      const response = await fetch(BACKEND_URL + "/api/addOrder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

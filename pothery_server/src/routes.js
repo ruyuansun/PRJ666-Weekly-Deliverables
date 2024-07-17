@@ -11,6 +11,7 @@ const profile = require("./routes/profile");
 const documents = require("./routes/documents");
 const payment = require("./routes/payment");
 const logout = require("./routes/logout");
+const products = require("./routes/products");
 
 /* public code */
 
@@ -32,6 +33,7 @@ function initialize_routes(app) {
 	payment.payment_post(router);
 	payment.payment_get(router);
 	payment.payment_rm_post(router);
+	products.products_routes(router);
 
 	test_data.test_data_get(router); // For testing
 
