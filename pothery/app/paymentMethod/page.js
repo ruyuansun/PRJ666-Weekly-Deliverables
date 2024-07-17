@@ -33,39 +33,36 @@ export default function paymentMethod() {
   const [paymentMethodData,setPaymentMethodData] = useState([])
 
   //get all payment method
-  async function getPaymentMethods(){
-      //using dummy data for testing
-      const dummyData = [{"name":"Master Card","cardNumber":"123456453","cardExpiry":"12/24","cardType":"credit","img":"mastercard"},
-        {"name":"Debit Card","cardNumber":"54353453445","cardExpiry":"09/24","cardType":"debit","img":"debitcard"}]
-        setPaymentMethodData(dummyData)
-        return 
+  async function getPaymentMethods() {
    
-    try {
-      const response = await fetch(BACKEND_URL + "/api/getPaymentMethods", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        //body: JSON.stringify({ paymentType, cardNumber,cardExpiry }),
-      });
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(BACKEND_URL + "/api/getPaymentMethods", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": 'Poth ' + token
+          },
+        });
 
-  if (response.status == 200) {
-    let paymentMethodData = await response.json();
-  
+        if (response.status == 403) { window.location.href = "/login"; }
 
-  } else {
-    const data = await response.json();
-    setError(data.message);
+        if (response.status == 200) {
+          let paymentMethodData = await response.json();
+          setPaymentMethodData(paymentMethodData);
+        } else {
+          const data = await response.json();
+          setError(data.message);
+        }
+        } catch (error) {
+          console.error("Error:", error);
+          setError("An error occurred during login.");
+        }
   }
-  } catch (error) {
-    console.error("Error:", error);
-      setError("An error occurred during login.");
-  }
-}
 
-useEffect(()=>{
-  getPaymentMethods()
-},[])
+  useEffect(()=>{
+    getPaymentMethods()
+  },[])
 
 
   async function handleSubmit(event) {
@@ -74,25 +71,39 @@ useEffect(()=>{
 
 
     try {
-    	
+        let exp = cardExpiry.split('/')
+        let expMonth = exp[0];
+        let expYear = exp[1];
+        let securityCode = "111"
+  
+        const token = localStorage.getItem('token');
       	const response = await fetch(BACKEND_URL + "/api/addPaymentMethod", {
         	method: "POST",
-        	headers: {
-          	"Content-Type": "application/json",
+          headers: {
+            "Authorization": 'Poth ' + token,
+          	"Content-Type": "application/json"
         	},
-        	body: JSON.stringify({ paymentType, cardNumber,cardExpiry }),
+        	body: JSON.stringify({ 
+            paymentType,
+            cardNumber,
+            expMonth,
+            expYear,
+            securityCode
+          }),
       	});
 
-		if (response.status == 310) {
-			alert("Add payment Method successful!");
+      if (response.status == 403) { window.location.href = "/login"; }
 
-		} else {
-			const data = await response.json();
-			setError(data.message);
-		}
+      if (response.status == 310) {
+        alert("Add payment Method successful!");
+
+      } else {
+        const data = await response.json();
+        setError(data.message);
+      }
     } catch (error) {
-    	console.error("Error:", error);
-      	setError("An error occurred during login.");
+      console.error("Error:", error);
+      setError("An error occurred during login.");
     }
   }
 
@@ -104,7 +115,14 @@ useEffect(()=>{
           <h1 className="text-2xl mb-5">Payment Method</h1>
           <div>
             {paymentMethodData && paymentMethodData.map((method)=>{
-              return <PaymentMethodDOM name={method.name} cardExpiry={method.cardExpiry} cardNumber={method.cardNumber} cardType={method.cardType} img={method.img}/>
+              return <PaymentMethodDOM 
+                key={method.id}
+                id={method.id}
+                name={method.name}
+                cardExpiry={method.exp_month + "/" + method.exp_year}
+                cardNumber={method.card_number}
+                cardType={method.payment_type}
+                img={method.payment_type}/>
               })}
           </div>
           <div className="flex content-between mt-10 gap-10">
@@ -135,12 +153,10 @@ useEffect(()=>{
                         </div>
                         <Button className="mt-6 bg-[#e3d4cb] text-black px-4 py-2 rounded-lg w-full">Confirm</Button>
                     </form>
-
-      </DialogDescription>
-    </DialogHeader>
-  </DialogContent>
-</Dialog>
-
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
 
             <Button className="bg-gray-300">Back</Button>
           </div>

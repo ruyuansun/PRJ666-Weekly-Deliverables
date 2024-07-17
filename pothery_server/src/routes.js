@@ -30,6 +30,8 @@ function initialize_routes(app) {
 	documents.document_add_post(router);
 	logout.logout_post(router);
 	payment.payment_post(router);
+	payment.payment_get(router);
+	payment.payment_rm_post(router);
 
 	test_data.test_data_get(router); // For testing
 
