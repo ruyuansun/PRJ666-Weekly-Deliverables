@@ -5,7 +5,7 @@ import { Button } from "../../components/ui/button";
 import Image from "next/image";
 import ModalUpload from "../../components/ModalUpload";
 import { useRouter } from "next/navigation";
-import { BACKEND_URL } from "../constants";
+import { BACKEND_URL } from '../constants';
 
 const bgImgWidth = 1000;
 const bgImgHeight = 500;

@@ -1,29 +1,35 @@
 import { Button } from "../../../components/ui/button";
 import { useState } from "react";
 import Image from "next/image";
+import { BACKEND_URL } from '../../constants';
 
 export default function PaymentMethodDOM(props) {
-  const apiEndpoint = ""; //link to backend
   const [showDoc, setShowDoc] = useState(true);
 
   function handleRemove() {
-    fetch(apiEndpoint, {
+    console.log(props);
+
+    const token = localStorage.getItem('token');
+    fetch(BACKEND_URL + "/api/rmPaymentMethod", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": 'Poth ' + token
       },
-      body: JSON.stringify({ paymentMethodId: props.paymentMethodId }),
+      body: JSON.stringify({ id: props.id }),
     })
-      .then((response) => response.json())
+    .then((response) => {
+      if (response.status == 403) { window.location.href = "/login"; } 
+      response.json()
       .then((data) => {
         console.log("Success:", data);
         setShowDoc(false);
-        // Handle success (e.g., show a success message, redirect, etc.)
+
       })
-      .catch((error) => {
-        console.error("Error:", error);
-        // Handle error (e.g., show an error message)
-      });
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
   }
 
   return (
