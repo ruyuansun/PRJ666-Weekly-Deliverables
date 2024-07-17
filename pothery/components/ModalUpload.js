@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import UploadImageButton from "./UploadImageButton";
+import { BACKEND_URL } from "../app/constants";
 
 export default function ModalUpload({ setImageUrl, setModalUploadCloseState }) {
   const [bio, setBio] = useState("");
@@ -14,12 +15,16 @@ export default function ModalUpload({ setImageUrl, setModalUploadCloseState }) {
   async function handleUpload() {
     console.log("Uploading profile with image URL:", imageUrl); // Log image URL
     const formData = new FormData();
-    formData.append("email", localStorage.getItem("userEmail"));
     formData.append("bio", bio);
     formData.append("profile_picture", imageUrl);
 
-    const response = await fetch("http://localhost:4000/api/profile", {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(BACKEND_URL + "/api/profile", {
       method: "POST",
+      headers: {
+				"Authorization": 'Poth ' + token
+			},
       body: formData,
     });
 

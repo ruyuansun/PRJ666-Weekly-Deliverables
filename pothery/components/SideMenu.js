@@ -49,6 +49,9 @@ export default function Sidemenu() {
         <a href="/settings">Settings</a>
         <a href="/help">Help</a>
       </div>
+      <div className="flex content-between mt-10 gap-10">
+        <a href="/logout">Logout</a>
+      </div>
     </div>
   );
 }
