@@ -7,8 +7,9 @@ const register = require("./routes/register");
 const reset_password = require("./routes/reset_password");
 const verify2fa = require("./routes/verify2fa");
 const test_data = require("./routes/test_data");
-const profile = require("./routes/profile"); // Import the profile routes
+const profile = require("./routes/profile");
 const documents = require("./routes/documents");
+const payment = require("./routes/payment");
 
 /* public code */
 
@@ -26,6 +27,7 @@ function initialize_routes(app) {
   documents.document_list_post(router);
   documents.document_delete_post(router);
   documents.document_add_post(router);
+  payment.payment_post(router);
 
   test_data.test_data_get(router); // For testing
 
