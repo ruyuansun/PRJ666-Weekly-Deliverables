@@ -2,8 +2,16 @@
 
 import Sidemenu from "../../components/SideMenu";
 import Image from "next/image";
+ 
+import { useRouter } from 'next/navigation'
 
 export default function ShoppingCart() {
+  const router = useRouter()
+  
+  function handleCheckout(){
+  
+    router.push('/checkout')
+  }
   return (
     <div className="w-11/12 mx-auto min-h-screen">
       <div className="flex">
@@ -213,7 +221,7 @@ export default function ShoppingCart() {
 
           {/* Checkout */}
           <section className="flex justify-end mb-10">
-            <button className="px-8 py-1 bg-orange-300/30 rounded-lg">
+            <button className="px-8 py-1 bg-orange-300/30 rounded-lg" onClick={handleCheckout}>
               Checkout
             </button>
           </section>

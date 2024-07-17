@@ -21,15 +21,16 @@ function register_post(router) {
                 crypto.hash_password(password)
                 .then((hashed_pass) => {
                     console.log(hashed_pass);
-                    db.query(insertUserQuery, [email, hashed_pass]);
-                });
+                    db.query(insertUserQuery, [email, hashed_pass])
+                    .then((result) => {
+                        if (result) {
+                            res.status(201).json({ message: "User registered successfully" });
+                        }
+                    });    
+                })
             }
         })
-        .then((result) => {
-            if (result) {
-                res.status(201).json({ message: "User registered successfully" });
-            }
-        })
+        
         .catch((err) => {
             res.status(500).json({ error: err.message });
         });

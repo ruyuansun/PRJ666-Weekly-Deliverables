@@ -1,11 +1,9 @@
 "use client";
 
 import Sidemenu from "../../components/SideMenu";
-import { Button } from "../../components/ui/button";
+
 import React, { useState } from "react";
-import { Input } from "../../components/ui/input";
 import { BACKEND_URL } from "../constants";
-import { useEffect } from "react";
 import { CheckoutUserRoleDOM } from "./_components/CheckoutUserRoleDom";
 import { ShippingAddressDOM } from "./_components/ShippingAddressDOM";
 import { BillingAddressDOM } from "./_components/BillingAddressDOM";

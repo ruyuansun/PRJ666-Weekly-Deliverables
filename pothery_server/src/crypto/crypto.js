@@ -1,19 +1,40 @@
 const bcrypt = require("bcrypt")
-
-var matches;
+const jwt = require("jsonwebtoken");
 
 module.exports = {
-  	hash_password(password) {
-    	return bcrypt.hash(password, 10);
-	},
-
-	hash_password_given_matches(password, hash) {
-		bcrypt.compare(password, hash, function(err, result) {
-			// Something is very wrong if err is thrown
-			if (err) { throw err; }
-
-			matches = result;
-    	});		
-		return matches;
-	}
+  	hash_password,
+	hash_password_given_matches,
+	decode_token,
+	create_token,
+	authorize_token
 };
+
+async function hash_password(password) {
+	return await bcrypt.hash(password, 13);
+}
+
+async function hash_password_given_matches(password, hash) {
+	const valid = await bcrypt.compare(password, hash);
+	return valid;
+}
+
+function decode_token(req) {
+	const header = req.headers['authorization'];
+	const token = header && header.split(' ')[1]
+	return jwt.decode(token, process.env.MY_SECRET);
+}
+
+function create_token(uid) {
+	return jwt.sign( { uid } , process.env.MY_SECRET, { expiresIn: '5m' });
+}
+
+function authorize_token(req, res, next) {
+	const header = req.headers['authorization'];
+	const token = header && header.split(' ')[1]
+	if (token == null) return res.sendStatus(401);
+
+	jwt.verify(token, process.env.MY_SECRET, (err) => {
+		if (err) return res.sendStatus(403);
+		next()
+	})		
+}
