@@ -21,7 +21,6 @@ module.exports = {
 function document_list_post(router) {
 	router.post("/documents/get", crypto.authorize_token, (req, res) => {
 		let result = crypto.decode_token(req);
-		console.log(result);
 		document_list_retrieve(res, result.uid);
 	});
 	return;
