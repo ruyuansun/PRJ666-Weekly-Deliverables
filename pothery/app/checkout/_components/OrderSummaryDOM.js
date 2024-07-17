@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { useRouter } from 'next/navigation'
 
 export function OrderSummaryDOM(){
     const [subtotal,setSubtotal] = useState(0)
     const [tax,setTax] = useState(0)
+    const router = useRouter()
 
     return(
         <div className="pl-4">
@@ -24,7 +26,7 @@ export function OrderSummaryDOM(){
                 <Input name="promotion" />
             </div>
             <div className="flex gap-2 mt-4">
-                <Button className="bg-gray-100 text-black px-4 py-2 rounded-lg w-1/2">Back</Button>
+                <Button className="bg-gray-100 text-black px-4 py-2 rounded-lg w-1/2" onClick={()=>{router.push("/shoppingCart")}}>Back</Button>
                 <Button className="bg-[#e3d4cb] text-black px-4 py-2 rounded-lg w-1/2">Place Order</Button>
             </div>
             
