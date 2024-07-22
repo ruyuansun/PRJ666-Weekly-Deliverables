@@ -13,6 +13,7 @@ export default function Sidemenu() {
             <Image
               className="w-14 h-14 rounded-full"
               src={profPhotoUrl}
+              alt="avatar"
               width={500}
               height={500}
             />

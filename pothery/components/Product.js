@@ -1,13 +1,9 @@
 import Image from "next/image";
 
 export default function Product({
-  userName = "Username",
-  userProfileUrl,
-  postImageUrl,
-  productName = "Product name",
-  productDesc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  productPrice = 0,
-  timePosted = 0,
+  product,
+  handleActionButton,
+  actionButtonText,
 }) {
   return (
     <div>
@@ -17,7 +13,7 @@ export default function Product({
           <div id="profile-img">
             <Image
               className="rounded-full w-10 h-10 border"
-              src={userProfileUrl}
+              src={product.profProfileUrl}
               alt="user profile"
               width={500}
               height={300}
@@ -26,10 +22,10 @@ export default function Product({
 
           <div id="user-info">
             <div className="font-semibold" id="user-name">
-              {userName}
+              {product.userName}
             </div>
             <div className="text-xs text-gray-600" id="date-posted">
-              {timePosted} min ago
+              {product.timePosted} min ago
             </div>
           </div>
         </div>
@@ -40,10 +36,11 @@ export default function Product({
 
       {/* Product image */}
       <div className="mt-4">
-        {postImageUrl ? (
+        {product.postImageUrl ? (
           <Image
             className="w-full rounded-md"
-            src={postImageUrl}
+            src={product.postImageUrl}
+            alt="product image"
             width={500}
             height={500}
           />
@@ -52,11 +49,14 @@ export default function Product({
 
       {/* Product info */}
       <div>
-        <h5 className="font-bold mt-2">{productName}</h5>
-        <p className="mt-3">{productDesc}</p>
-        <p className="mt-2 font-medium">$ {productPrice}</p>
-        <button className="bg-orange-200 w-full rounded-full py-2 mt-3">
-          Buy
+        <h5 className="font-bold mt-2">{product.productName}</h5>
+        <p className="mt-3">{product.productDesc}</p>
+        <p className="mt-2 font-medium">$ {product.productPrice}</p>
+        <button
+          className="bg-orange-200 w-full rounded-full py-2 mt-3"
+          onClick={() => handleActionButton()}
+        >
+          {actionButtonText}
         </button>
       </div>
     </div>
