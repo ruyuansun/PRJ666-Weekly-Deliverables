@@ -3,7 +3,7 @@
 import Sidemenu from "../../components/SideMenu";
 import { Input } from "../../components/ui/input";
 import React, { useState } from "react";
-import { BACKEND_URL } from '../constants';
+import { BACKEND_URL } from "../constants";
 
 export default function uploadProduct() {
   const [formData, setFormData] = useState({
@@ -35,29 +35,34 @@ export default function uploadProduct() {
     event.preventDefault();
 
     const form = new FormData();
-    form.append("product_name", formData.description);
+    form.append("product_description", formData.description);
     form.append("price", formData.price);
     form.append("location", formData.location);
+    form.append("name", formData.name);
     if (formData.image) {
       //form.append("image", formData.image);
     }
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const response = await fetch(BACKEND_URL + "/api/addProd", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": 'Poth ' + token
+        Authorization: "Poth " + token,
       },
       body: JSON.stringify({
-        product_name: formData.description,
+        name: formData.name,
+        description: formData.description,
         price: formData.price,
-        location: formData.location
+        location: formData.location,
       }),
-    })
+    });
 
-    if (response.status == 403) { window.location.href = "/login"; } 
-      response.json()
+    if (response.status == 403) {
+      window.location.href = "/login";
+    }
+    response
+      .json()
       .then((data) => {
         console.log("Success:", data);
         // Handle success (e.g., show a success message, redirect, etc.)
@@ -76,6 +81,15 @@ export default function uploadProduct() {
           <form className="w-96 mx-auto mt-20" onSubmit={submitHandle}>
             <h2>Upload Product</h2>
             <img src={previewImg} />
+            <Input
+              className="my-10"
+              type="text"
+              name="name"
+              placeholder="Enter Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
             <Input
               className="my-10"
               type="text"
