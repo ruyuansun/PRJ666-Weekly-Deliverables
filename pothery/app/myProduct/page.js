@@ -3,24 +3,24 @@
 import { useEffect, useState } from "react";
 import Sidemenu from "../../components/SideMenu";
 import Product from "./_component/Product";
-import { BACKEND_URL } from '../constants';
+import { BACKEND_URL } from "../constants";
 
 export default function MyProduct() {
-  const [products, setProducts] = useState([])
-
+  const [products, setProducts] = useState([]);
 
   // Get products
   async function getProducts() {
-
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const response = await fetch(BACKEND_URL + "/api/getProd", {
       method: "GET",
       headers: {
-        "Authorization": 'Poth ' + token
+        Authorization: "Poth " + token,
       },
     });
 
-    if (response.status == 403) { window.location.href = "/login"; }
+    if (response.status == 403) {
+      window.location.href = "/login";
+    }
 
     if (response.status == 200) {
       let productData = await response.json();
@@ -28,12 +28,12 @@ export default function MyProduct() {
     } else {
       const data = await response.json();
       setError(data.message);
-    }    
+    }
   }
 
-  useEffect(()=>{
-    getProducts()
-  },[])
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   return (
     <div className="w-11/12 mx-auto min-h-screen">
@@ -52,14 +52,19 @@ export default function MyProduct() {
 
           {/* List of my products */}
           <section className="grid grid-cols-2 gap-10">
-          {products && products.map((method)=>{
-              return <Product 
-                imgSrc="/"
-                name={method.product_name}
-                desc={method.product_name}
-                price={method.price}
-                location={method.location}/>
-          })}
+            {products &&
+              products.map((product) => {
+                return (
+                  <Product
+                    key={product.id}
+                    imgSrc={product.image ? product.image : "/"}
+                    name={product.name}
+                    desc={product.description}
+                    price={product.price}
+                    location={product.location}
+                  />
+                );
+              })}
           </section>
         </div>
       </div>
