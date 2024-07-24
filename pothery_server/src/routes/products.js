@@ -38,11 +38,11 @@ function product_add_post(router) {
   router.post("/addProd", crypto.authorize_token, (req, res) => {
     let token_data = crypto.decode_token(req);
 
-    let { name, description, price, location } = req.body;
+    let { name, description, price, location, image } = req.body;
 
     const query =
-      "INSERT INTO products (description, price, location, uid, name) VALUES (?, ?, ?, ?, ?)";
-    db.query(query, [description, price, location, token_data.uid, name])
+      "INSERT INTO products (description, price, location, uid, name, image) VALUES (?, ?, ?, ?, ?, ?)";
+    db.query(query, [description, price, location, token_data.uid, name, image])
       .then((result) => {
         if (result) {
           res.status(200).json({ message: result });

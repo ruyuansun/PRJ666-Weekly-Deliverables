@@ -4,44 +4,36 @@ import Sidemenu from "../../components/SideMenu";
 import { Input } from "../../components/ui/input";
 import React, { useState } from "react";
 import { BACKEND_URL } from "../constants";
+import { CldUploadButton, CldImage } from "next-cloudinary";
+import Image from "next/image";
 
 export default function uploadProduct() {
   const [formData, setFormData] = useState({
     description: "",
     price: "",
     location: "",
-    image: null,
+    image: "",
   });
   const [previewImg, setPreviewImg] = useState("");
 
   function handleChange(event) {
-    const { name, value, type, files } = event.target;
-    if (type === "file") {
-      const imageUrl = URL.createObjectURL(files[0]);
-      setPreviewImg(imageUrl);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: files[0],
-      }));
-    } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: value,
-      }));
-    }
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+      image: previewImg,
+    }));
   }
 
   async function submitHandle(event) {
     event.preventDefault();
 
     const form = new FormData();
-    form.append("product_description", formData.description);
+    form.append("product_description", formData.image);
     form.append("price", formData.price);
     form.append("location", formData.location);
     form.append("name", formData.name);
-    if (formData.image) {
-      //form.append("image", formData.image);
-    }
+    form.append("image", previewImg.toString());
 
     const token = localStorage.getItem("token");
     const response = await fetch(BACKEND_URL + "/api/addProd", {
@@ -55,6 +47,7 @@ export default function uploadProduct() {
         description: formData.description,
         price: formData.price,
         location: formData.location,
+        image: previewImg.toString(),
       }),
     });
 
@@ -79,8 +72,16 @@ export default function uploadProduct() {
         <Sidemenu />
         <div className="w-8/12">
           <form className="w-96 mx-auto mt-20" onSubmit={submitHandle}>
-            <h2>Upload Product</h2>
-            <img src={previewImg} />
+            <div className="rounded-full overflow-hidden w-1/2 h-1/2 mx-auto">
+              {previewImg && (
+                <CldImage
+                  className="object-cover"
+                  width="300"
+                  height="300"
+                  src={previewImg}
+                />
+              )}
+            </div>
             <Input
               className="my-10"
               type="text"
@@ -117,13 +118,18 @@ export default function uploadProduct() {
               onChange={handleChange}
               required
             />
-            <Input
-              className="mb-10"
-              type="file"
-              name="image"
-              onChange={handleChange}
-              required
-            />
+
+            <CldUploadButton
+              className="w-full rounded-md py-2 px-3 bg-[#e3d4cb] mb-5"
+              uploadPreset="ml_default"
+              signatureEndpoint="/api/cloudinary"
+              onSuccess={(results) => {
+                console.log(results.info.secure_url);
+                setPreviewImg(results.info.secure_url);
+              }}
+            >
+              Choose an image
+            </CldUploadButton>
             <button
               type="submit"
               className="bg-[#e3d4cb] text-black px-4 py-2 rounded-lg w-full"

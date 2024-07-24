@@ -1,9 +1,10 @@
 import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 
 export default function Product({ imgSrc, name, desc, price, location }) {
   return (
     <div>
-      <Image src={imgSrc} width={500} height={500} alt={name} />
+      <CldImage src={imgSrc} width="500" height="500" alt={name} />
       <h5 className="font-bold mb-3">{name}</h5>
       <p className="mb-3">{desc}</p>
       <p className="mb-5 font-medium">$ {price}</p>

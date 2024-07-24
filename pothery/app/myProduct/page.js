@@ -56,7 +56,8 @@ export default function MyProduct() {
               products.map((product) => {
                 return (
                   <Product
-                    imgSrc="/"
+                    key={product.id}
+                    imgSrc={product.image ? product.image : "/"}
                     name={product.name}
                     desc={product.description}
                     price={product.price}
