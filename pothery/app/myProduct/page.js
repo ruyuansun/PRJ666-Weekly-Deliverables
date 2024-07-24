@@ -51,7 +51,7 @@ export default function MyProduct() {
           </section>
 
           {/* List of my products */}
-          <section className="grid grid-cols-2 gap-10">
+          <section className="grid grid-cols-3 gap-10">
             {products &&
               products.map((product) => {
                 return (
