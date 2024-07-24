@@ -59,6 +59,19 @@ function product_add_post(router) {
 function product_remove_post(router) {
   router.post("/rmProd", crypto.authorize_token, (req, res) => {
     let token_data = crypto.decode_token(req);
+    let { id } = req.body;
+
+    const query = "DELETE FROM products WHERE id=?;";
+    db.query(query, [id])
+      .then((result) => {
+        if (result) {
+          res.status(200).json({ message: result });
+        }
+      })
+      .catch((err) => {
+        console.error("Database error:", err);
+        res.status(500).json({ error: err.message });
+      });
   });
   return;
 }
