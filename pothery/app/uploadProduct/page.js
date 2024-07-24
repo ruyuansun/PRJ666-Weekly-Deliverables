@@ -5,7 +5,7 @@ import { Input } from "../../components/ui/input";
 import React, { useState } from "react";
 import { BACKEND_URL } from "../constants";
 import { CldUploadButton, CldImage } from "next-cloudinary";
-import Image from "next/image";
+import { redirect, RedirectType } from "next/navigation";
 
 export default function uploadProduct() {
   const [formData, setFormData] = useState({
@@ -58,7 +58,7 @@ export default function uploadProduct() {
       .json()
       .then((data) => {
         console.log("Success:", data);
-        // Handle success (e.g., show a success message, redirect, etc.)
+        window.location.href = "/myProduct"; // Redirect to the myProduct page
       })
       .catch((error) => {
         console.error("Error:", error);

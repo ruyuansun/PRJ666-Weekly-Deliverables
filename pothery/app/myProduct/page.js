@@ -31,6 +31,35 @@ export default function MyProduct() {
     }
   }
 
+  // Remove a product
+  async function removeProduct(productId) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(BACKEND_URL + "/api/rmProd", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Poth " + token,
+      },
+      body: JSON.stringify({
+        id: productId,
+      }),
+    });
+
+    if (response.status == 200) {
+      console.log("Product has been removed");
+    } else {
+      console.log("Something is happening...");
+    }
+  }
+
+  function handleRemoveClick(event) {
+    let productId = event.target.parentElement.parentElement.id;
+    let newProductId = productId.replace("product-", "");
+    removeProduct(newProductId);
+    getProducts();
+  }
+
   useEffect(() => {
     getProducts();
   }, []);
@@ -62,6 +91,8 @@ export default function MyProduct() {
                     desc={product.description}
                     price={product.price}
                     location={product.location}
+                    onRemove={handleRemoveClick}
+                    id={"product-" + product.id}
                   />
                 );
               })}
