@@ -12,7 +12,7 @@ export default function Product({
 }) {
   return (
     <div className="shadow-lg rounded-md overflow-hidden h-fit" id={id}>
-      <div className="h-[20rem] overflow-hidden">
+      <div className="h-[20rem]">
         <CldImage
           className="h-full object-cover"
           src={imgSrc}

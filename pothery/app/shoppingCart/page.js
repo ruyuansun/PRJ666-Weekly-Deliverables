@@ -1,27 +1,171 @@
 "use client";
 
 import Sidemenu from "../../components/SideMenu";
-import Image from "next/image";
- 
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { BACKEND_URL } from "../constants";
+import { CldImage } from "next-cloudinary";
 
 export default function ShoppingCart() {
-  const router = useRouter()
-  
-  function handleCheckout(){
-  
-    router.push('/checkout')
+  const router = useRouter();
+  const [products, setProducts] = useState([]);
+  const [subtotal, setSubtotal] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    // get all products from database and populate the products state
+    getProducts()
+      .then((data) => {
+        // populate products state
+        data.forEach((e) => handleAddProduct(e));
+
+        calculateTotal(data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  // Calculates the subtotal
+  function calculateTotal(data) {
+    let subtotal = 0;
+    let total = 0;
+    let tax = 0;
+
+    // calculate subtotal without tax
+    data.forEach((product) => (subtotal += product.price * product.qty));
+    setSubtotal(subtotal);
+
+    // calculate total with tax
+    tax = subtotal * 0.15; // applies 15% tax
+    total = tax + subtotal;
+    setTotal(total);
   }
+
+  // Get products from shopping cart
+  async function getProducts() {
+    const token = localStorage.getItem("token");
+    const response = await fetch(BACKEND_URL + "/api/shoppingCart/getProd", {
+      method: "GET",
+      headers: {
+        Authorization: "Poth " + token,
+      },
+    });
+
+    if (response.status == 403) {
+      window.location.href = "/login";
+    }
+
+    if (response.status == 200) {
+      let productData = await response.json();
+      return new Promise((resolve) => {
+        resolve(productData);
+      });
+    } else {
+      const data = await response.json();
+      return new Promise((reject) => {
+        reject(data.message);
+      });
+    }
+  }
+
+  // Updates the product in the database
+  async function updateProduct(product) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`${BACKEND_URL}/api/shoppingCart/updateProd`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Poth " + token,
+      },
+      body: JSON.stringify({
+        product: product,
+      }),
+    });
+
+    const result = await response.json();
+
+    return result;
+  }
+
+  // Removes the product in the database
+  async function removeProduct(product) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`${BACKEND_URL}/api/shoppingCart/removeProd`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Poth " + token,
+      },
+      body: JSON.stringify({
+        product: product,
+      }),
+    });
+
+    const result = await response.json();
+
+    return result;
+  }
+
+  // Add new product to the products state
+  function handleAddProduct(newProduct) {
+    setProducts((prevProducts) => [
+      ...prevProducts,
+      {
+        id: newProduct.id,
+        image: newProduct.image,
+        name: newProduct.name,
+        qty: newProduct.qty,
+        price: newProduct.price,
+        total: newProduct.price,
+      },
+    ]);
+  }
+
+  // Updates a product from the database
+  async function handleModifyProduct(product) {
+    const result = await updateProduct(product);
+    console.log(`${result.affectedRows} rows has been updated.`);
+
+    getProducts()
+      .then((data) => {
+        // set the new update data to products state
+        setProducts(data);
+        calculateTotal(data);
+      })
+      .catch((err) => console.error(err));
+  }
+
+  // Removes a product from the database
+  async function handleRemoveProduct(product) {
+    const result = await removeProduct(product);
+    console.log(`${result.affectedRows} rows has been removed.`);
+
+    getProducts()
+      .then((data) => {
+        // set the new update data to products state
+        setProducts(data);
+        calculateTotal(data);
+      })
+      .catch((err) => console.error(err));
+  }
+
+  // Redirect to checkout page
+  function handleCheckout() {
+    router.push("/checkout");
+  }
+
   return (
     <div className="w-11/12 mx-auto min-h-screen">
       <div className="flex">
         <Sidemenu />
+
         <div className="px-10 w-full">
           {/* Shopping cart section */}
           <section>
             <div className="flex justify-between border-b border-black">
               <h3 className="font-bold text-xl">Shopping Cart</h3>
-              <p>3 items</p>
+              <p>{products.length}</p>
             </div>
 
             {/* List of products */}
@@ -36,119 +180,16 @@ export default function ShoppingCart() {
               </thead>
 
               <tbody>
-                <tr className="flex justify-between mt-3">
-                  {/* Product info */}
-                  <td className="flex justify-center w-full">
-                    <div>
-                      <Image
-                        className="bg-gray-50"
-                        src="/"
-                        width={120}
-                        height={120}
-                        alt="product"
-                      />
-                    </div>
-                    <div className="ml-5">
-                      <h5 className="font-medium mb-3">Product Name</h5>
-                      <button>Remove</button>
-                    </div>
-                  </td>
-
-                  {/* Quantity */}
-                  <td className="w-full">
-                    <div className="flex justify-center">
-                      <button className="mr-2 text-xl">-</button>
-                      <p className="p-2 border">2</p>
-                      <button className="ml-2 text-xl">+</button>
-                    </div>
-                  </td>
-
-                  {/* Price */}
-                  <td className="w-full text-center">
-                    <p>$100</p>
-                  </td>
-
-                  {/* Total */}
-                  <td className="w-full text-center">
-                    <p>$100</p>
-                  </td>
-                </tr>
-
-                <tr className="flex justify-between mt-3">
-                  {/* Product info */}
-                  <td className="flex justify-center w-full">
-                    <div>
-                      <Image
-                        className="bg-gray-50"
-                        src="/"
-                        width={120}
-                        height={120}
-                        alt="product"
-                      />
-                    </div>
-                    <div className="ml-5">
-                      <h5 className="font-medium mb-3">Product Name</h5>
-                      <button>Remove</button>
-                    </div>
-                  </td>
-
-                  {/* Quantity */}
-                  <td className="w-full">
-                    <div className="flex justify-center">
-                      <button className="mr-2 text-xl">-</button>
-                      <p className="p-2 border">2</p>
-                      <button className="ml-2 text-xl">+</button>
-                    </div>
-                  </td>
-
-                  {/* Price */}
-                  <td className="w-full text-center">
-                    <p>$100</p>
-                  </td>
-
-                  {/* Total */}
-                  <td className="w-full text-center">
-                    <p>$100</p>
-                  </td>
-                </tr>
-
-                <tr className="flex justify-between mt-3">
-                  {/* Product info */}
-                  <td className="flex justify-center w-full">
-                    <div>
-                      <Image
-                        className="bg-gray-50"
-                        src="/"
-                        width={120}
-                        height={120}
-                        alt="product"
-                      />
-                    </div>
-                    <div className="ml-5">
-                      <h5 className="font-medium mb-3">Product Name</h5>
-                      <button>Remove</button>
-                    </div>
-                  </td>
-
-                  {/* Quantity */}
-                  <td className="w-full">
-                    <div className="flex justify-center">
-                      <button className="mr-2 text-xl">-</button>
-                      <p className="p-2 border">2</p>
-                      <button className="ml-2 text-xl">+</button>
-                    </div>
-                  </td>
-
-                  {/* Price */}
-                  <td className="w-full text-center">
-                    <p>$100</p>
-                  </td>
-
-                  {/* Total */}
-                  <td className="w-full text-center">
-                    <p>$100</p>
-                  </td>
-                </tr>
+                {products.map((product) => {
+                  return (
+                    <Product
+                      key={product.id}
+                      product={product}
+                      onChange={handleModifyProduct}
+                      onRemove={handleRemoveProduct}
+                    />
+                  );
+                })}
               </tbody>
 
               <tfoot></tfoot>
@@ -165,12 +206,15 @@ export default function ShoppingCart() {
               {/* Subtotal */}
               <div className="flex justify-between mb-10">
                 <p className="font-bold">Subtotal</p>
-                <p>$300</p>
+                <p>${subtotal}</p>
               </div>
 
               {/* Estimated shipping */}
               <div className="mb-10">
-                <label for="shipping_method" className="font-bold block mb-3">
+                <label
+                  htmlFor="shipping_method"
+                  className="font-bold block mb-3"
+                >
                   Estimated Shipping
                 </label>
 
@@ -188,7 +232,7 @@ export default function ShoppingCart() {
               {/* Taxes */}
               <div className="flex justify-between mb-10">
                 <p className="font-bold">Taxes</p>
-                <p>$29</p>
+                <p>${(subtotal * 0.15).toFixed(2)}</p>
               </div>
 
               {/* Promotion code */}
@@ -215,18 +259,86 @@ export default function ShoppingCart() {
             {/* Estimated total */}
             <div className="flex justify-between mb-10 border-y border-black py-2">
               <p className="font-bold">Estimated total</p>
-              <p>$329</p>
+              <p>${total}</p>
             </div>
           </section>
 
           {/* Checkout */}
           <section className="flex justify-end mb-10">
-            <button className="px-8 py-1 bg-orange-300/30 rounded-lg" onClick={handleCheckout}>
+            <button
+              className="px-8 py-1 bg-orange-300/30 rounded-lg"
+              onClick={handleCheckout}
+            >
               Checkout
             </button>
           </section>
         </div>
       </div>
     </div>
+  );
+}
+
+function Product({ product, onChange, onRemove }) {
+  function handleDecrement() {
+    let newProduct = product;
+
+    if (newProduct.qty > 1) {
+      newProduct.qty -= 1;
+      onChange(newProduct);
+    }
+  }
+
+  function handleIncrement() {
+    let newProduct = product;
+    newProduct.qty += 1;
+    onChange(newProduct);
+  }
+
+  function handleOnRemove() {
+    onRemove(product);
+  }
+
+  return (
+    <tr className="flex justify-between mt-3" id={`product-${product.id}`}>
+      {/* Product info */}
+      <td className="flex w-full">
+        <div>
+          <CldImage
+            className="bg-gray-50"
+            src={product.image}
+            width="120"
+            height="120"
+            alt={product.name}
+          />
+        </div>
+        <div className="ml-5">
+          <h5 className="font-medium mb-3">{product.name}</h5>
+          <button onClick={handleOnRemove}>Remove</button>
+        </div>
+      </td>
+
+      {/* Quantity */}
+      <td className="w-full">
+        <div className="flex justify-center">
+          <button className="mr-2 text-xl" onClick={handleDecrement}>
+            -
+          </button>
+          <p className="p-2 border">{product.qty}</p>
+          <button className="ml-2 text-xl" onClick={handleIncrement}>
+            +
+          </button>
+        </div>
+      </td>
+
+      {/* Price */}
+      <td className="w-full text-center">
+        <p>${product.price}</p>
+      </td>
+
+      {/* Total */}
+      <td className="w-full text-center">
+        <p>${product.price * product.qty}</p>
+      </td>
+    </tr>
   );
 }
