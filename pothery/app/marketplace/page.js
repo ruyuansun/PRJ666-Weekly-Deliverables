@@ -7,6 +7,7 @@ import { BACKEND_URL } from "../constants";
 
 export default function Marketplace() {
   const [products, setProducts] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     getProducts();
@@ -76,14 +77,17 @@ export default function Marketplace() {
     <div className="w-11/12 mx-auto min-h-screen">
       <div className="flex">
         <Sidemenu />
-        <div className="w-full px-10 grid grid-cols-3 gap-10">
-          {products.map((product) => (
-            <Product
-              key={product.id}
-              product={product}
-              onBuy={handleBuyClick}
-            />
-          ))}
+        <div className="w-full px-10">
+          {error && <p className="text-red-500">{error}</p>}
+          <div className="grid grid-cols-3 gap-10">
+            {products.map((product) => (
+              <Product
+                key={product.id}
+                product={product}
+                onBuy={handleBuyClick}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -26,6 +26,7 @@ function decode_token(req) {
   const token = header && header.split(" ")[1];
   return jwt.decode(token, process.env.MY_SECRET);
 }
+console.log("MY_SECRET:", process.env.MY_SECRET); // Add this line for debugging
 
 function create_token(uid) {
   return jwt.sign({ uid }, process.env.MY_SECRET);
