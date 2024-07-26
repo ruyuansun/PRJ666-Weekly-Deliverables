@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+=======
+-- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
+>>>>>>> 0d1d5741ca7773637037049621b63ea3dc9a3819
 --
 -- Host: 127.0.0.1    Database: pothery
 -- ------------------------------------------------------
@@ -165,4 +169,8 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+<<<<<<< HEAD
 -- Dump completed on 2024-07-17 11:16:23
+=======
+-- Dump completed on 2024-07-26 11:43:30
+>>>>>>> 0d1d5741ca7773637037049621b63ea3dc9a3819
