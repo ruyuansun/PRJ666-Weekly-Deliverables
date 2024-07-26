@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: pothery
+-- Host: localhost    Database: pothery
 -- ------------------------------------------------------
--- Server version	8.0.37
+-- Server version	8.0.38
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -74,6 +74,65 @@ INSERT INTO `payments` VALUES (1,'visacard','123','12','24','111','2024-07-17 14
 UNLOCK TABLES;
 
 --
+-- Table structure for table `products`
+--
+
+DROP TABLE IF EXISTS `products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `products` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) DEFAULT NULL,
+  `price` double DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `uid` int NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `products`
+--
+
+LOCK TABLES `products` WRITE;
+/*!40000 ALTER TABLE `products` DISABLE KEYS */;
+INSERT INTO `products` VALUES (34,'Lorem ipsum odor amet, consectetuer adipiscing elit. Phasellus neque vulputate habitasse pharetra augue proin sagittis posuere.',12,'5950 Bathurst st. North York ON',4,'Pothery','https://res.cloudinary.com/pothery/image/upload/v1721846279/products/istock-1206801125_yrdqa3.webp'),(35,'Lorem ipsum odor amet, consectetuer adipiscing elit. Phasellus neque vulputate habitasse pharetra augue proin sagittis posuere.',24,'456 Elmwood Avenue Vancouver, BC V6E 1V3',4,'Clay O Poth','https://res.cloudinary.com/pothery/image/upload/v1721859076/products/ceramic-pieces-simple-carafes-pu-0618-1050x800_m8vx4a.jpg'),(36,'Lorem ipsum odor amet, consectetuer adipiscing elit. Phasellus neque vulputate habitasse pharetra augue proin sagittis posuere.',100,'1234 Sample St. North York ON M2R1Y9',16,'Single Pott','https://res.cloudinary.com/pothery/image/upload/v1721869670/products/PXL_20230908_171511960_2_ejm7ip.jpg');
+/*!40000 ALTER TABLE `products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `shopping_cart`
+--
+
+DROP TABLE IF EXISTS `shopping_cart`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `shopping_cart` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `productId` int NOT NULL,
+  `uid` int NOT NULL,
+  `qty` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `productId` (`productId`),
+  CONSTRAINT `shopping_cart_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `products` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `shopping_cart`
+--
+
+LOCK TABLES `shopping_cart` WRITE;
+/*!40000 ALTER TABLE `shopping_cart` DISABLE KEYS */;
+INSERT INTO `shopping_cart` VALUES (8,34,16,6),(9,35,16,6);
+/*!40000 ALTER TABLE `shopping_cart` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `test_data`
 --
 
@@ -114,7 +173,7 @@ CREATE TABLE `users` (
   `profile_picture` varchar(255) DEFAULT NULL,
   `bio` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +182,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (4,'test@test.ca','$2b$13$r50/1GIXs8lZPdnooCFC0enbjyD55YerCzqzU7t2E0EdVtYWzwU.i',0,NULL,NULL,''),(15,'mfa@mfa.ca','$2b$13$.1MKwQFnE.oGVxveMZkGBevzOdvY696sAKHCSWD5fLX83v2OHkhhu',1,'IBMCU6JIMR5SGXLIO46CM2CGFBHDUNJZ',NULL,NULL);
+INSERT INTO `users` VALUES (4,'test@test.ca','$2b$13$r50/1GIXs8lZPdnooCFC0enbjyD55YerCzqzU7t2E0EdVtYWzwU.i',0,NULL,NULL,''),(15,'mfa@mfa.ca','$2b$13$.1MKwQFnE.oGVxveMZkGBevzOdvY696sAKHCSWD5fLX83v2OHkhhu',1,'IBMCU6JIMR5SGXLIO46CM2CGFBHDUNJZ',NULL,NULL),(16,'joewardperalta@yahoo.com','$2b$13$zgGEhKuLYBWyWUA9SisQSuafRPb.IF3/4RV3BVPeKq/ovTdclFaAK',0,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -136,4 +195,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-07-17 11:16:23
+-- Dump completed on 2024-07-26 11:43:30
