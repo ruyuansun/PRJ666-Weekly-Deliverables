@@ -11,32 +11,37 @@ export default function ShoppingCart() {
   const [products, setProducts] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
+  const [shippingCost, setShippingCost] = useState(7.99);
+  const [taxes, setTaxes] = useState(0);
 
   useEffect(() => {
-    // get all products from database and populate the products state
+    // Get all products from database and populate the products state
     getProducts()
       .then((data) => {
-        // populate products state
+        // Populate products state
         data.forEach((e) => handleAddProduct(e));
-
-        calculateTotal(data);
+        calculateTotal(data, shippingCost);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  // Calculates the subtotal
-  function calculateTotal(data) {
-    let subtotal = 0;
-    let total = 0;
-    let tax = 0;
+  useEffect(() => {
+    // Recalculate total when shipping cost changes
+    calculateTotal(products, shippingCost);
+  }, [shippingCost]);
 
-    // calculate subtotal without tax
-    data.forEach((product) => (subtotal += product.price * product.qty));
+  // Function to calculate subtotal, taxes, and total
+  function calculateTotal(products, shippingCost) {
+    let subtotal = products.reduce(
+      (acc, product) => acc + product.price * product.qty,
+      0
+    );
     setSubtotal(subtotal);
 
-    // calculate total with tax
-    tax = subtotal * 0.15; // applies 15% tax
-    total = tax + subtotal;
+    let taxes = subtotal * 0.13; // 13% tax
+    setTaxes(taxes);
+
+    let total = subtotal + taxes + shippingCost;
     setTotal(total);
   }
 
@@ -122,37 +127,45 @@ export default function ShoppingCart() {
     ]);
   }
 
-  // Updates a product from the database
+  // Modify a product in the shopping cart
   async function handleModifyProduct(product) {
     const result = await updateProduct(product);
-    console.log(`${result.affectedRows} rows has been updated.`);
+    console.log(`${result.affectedRows} rows have been updated.`);
 
     getProducts()
       .then((data) => {
-        // set the new update data to products state
+        // Set the new update data to products state
         setProducts(data);
-        calculateTotal(data);
+        calculateTotal(data, shippingCost);
       })
       .catch((err) => console.error(err));
   }
 
-  // Removes a product from the database
+  // Remove a product from the shopping cart
   async function handleRemoveProduct(product) {
     const result = await removeProduct(product);
-    console.log(`${result.affectedRows} rows has been removed.`);
+    console.log(`${result.affectedRows} rows have been removed.`);
 
     getProducts()
       .then((data) => {
-        // set the new update data to products state
+        // Set the new update data to products state
         setProducts(data);
-        calculateTotal(data);
+        calculateTotal(data, shippingCost);
       })
       .catch((err) => console.error(err));
   }
 
   // Redirect to checkout page
   function handleCheckout() {
-    router.push("/checkout");
+    router.push({
+      pathname: "/checkout",
+      query: {
+        items: JSON.stringify(products),
+        total: total.toFixed(2),
+        taxes: taxes.toFixed(2),
+        shippingCost: shippingCost.toFixed(2),
+      },
+    });
   }
 
   return (
@@ -206,7 +219,7 @@ export default function ShoppingCart() {
               {/* Subtotal */}
               <div className="flex justify-between mb-10">
                 <p className="font-bold">Subtotal</p>
-                <p>${subtotal}</p>
+                <p>${subtotal.toFixed(2)}</p>
               </div>
 
               {/* Estimated shipping */}
@@ -221,18 +234,17 @@ export default function ShoppingCart() {
                 <select
                   className="px-10 py-2 border rounded-lg"
                   id="shipping_method"
+                  onChange={(e) => setShippingCost(parseFloat(e.target.value))}
                 >
-                  <option value="Standard Shipping">
-                    Standard Shipping ($7.99)
-                  </option>
-                  <option value="Fast Delivery">Fast Delivery ($12.99)</option>
+                  <option value="7.99">Standard Shipping ($7.99)</option>
+                  <option value="12.99">Fast Delivery ($12.99)</option>
                 </select>
               </div>
 
               {/* Taxes */}
               <div className="flex justify-between mb-10">
                 <p className="font-bold">Taxes</p>
-                <p>${(subtotal * 0.15).toFixed(2)}</p>
+                <p>${taxes.toFixed(2)}</p>
               </div>
 
               {/* Promotion code */}
@@ -259,7 +271,7 @@ export default function ShoppingCart() {
             {/* Estimated total */}
             <div className="flex justify-between mb-10 border-y border-black py-2">
               <p className="font-bold">Estimated total</p>
-              <p>${total}</p>
+              <p>${total.toFixed(2)}</p>
             </div>
           </section>
 
@@ -278,6 +290,7 @@ export default function ShoppingCart() {
   );
 }
 
+// Component to handle individual products in the cart
 function Product({ product, onChange, onRemove }) {
   function handleDecrement() {
     let newProduct = product;
@@ -332,12 +345,12 @@ function Product({ product, onChange, onRemove }) {
 
       {/* Price */}
       <td className="w-full text-center">
-        <p>${product.price}</p>
+        <p>${product.price.toFixed(2)}</p>
       </td>
 
       {/* Total */}
       <td className="w-full text-center">
-        <p>${product.price * product.qty}</p>
+        <p>${(product.price * product.qty).toFixed(2)}</p>
       </td>
     </tr>
   );
