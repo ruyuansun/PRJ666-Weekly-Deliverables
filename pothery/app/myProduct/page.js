@@ -11,7 +11,7 @@ export default function MyProduct() {
   // Get products
   async function getProducts() {
     const token = localStorage.getItem("token");
-    const response = await fetch(BACKEND_URL + "/api/getProd", {
+    const response = await fetch(BACKEND_URL + "/api/getProd/user", {
       method: "GET",
       headers: {
         Authorization: "Poth " + token,

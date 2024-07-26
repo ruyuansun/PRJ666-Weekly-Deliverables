@@ -17,11 +17,31 @@ function products_routes(router) {
 /* private code */
 
 function product_get(router) {
+  // get all products except for the current user
   router.get("/getProd", crypto.authorize_token, (req, res) => {
     let token_data = crypto.decode_token(req);
 
-    const query = "SELECT * FROM products WHERE uid = ?";
-    db.query(query, [token_data.uid])
+    const query = "SELECT * FROM products WHERE uid != " + token_data.uid;
+
+    db.query(query)
+      .then((result) => {
+        if (result) {
+          res.status(200).json(result);
+        }
+      })
+      .catch((err) => {
+        console.error("Database error:", err);
+        res.status(500).json({ error: err.message });
+      });
+  });
+
+  // get products for the current user
+  router.get("/getProd/user", crypto.authorize_token, (req, res) => {
+    let token_data = crypto.decode_token(req);
+
+    const query = "SELECT * FROM products WHERE uid = " + token_data.uid;
+
+    db.query(query)
       .then((result) => {
         if (result) {
           res.status(200).json(result);

@@ -61,10 +61,14 @@ export default function ShoppingCart() {
 
     if (response.status == 200) {
       let productData = await response.json();
-      return productData;
+      return new Promise((resolve) => {
+        resolve(productData);
+      });
     } else {
       const data = await response.json();
-      throw new Error(data.message);
+      return new Promise((reject) => {
+        reject(data.message);
+      });
     }
   }
 
