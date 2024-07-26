@@ -12,31 +12,35 @@ const documents = require("./routes/documents");
 const payment = require("./routes/payment");
 const logout = require("./routes/logout");
 const products = require("./routes/products");
+const shopping_cart = require("./routes/shopping_cart");
+const checkout = require("./routes/checkout");
 
 /* public code */
 
 module.exports = {
-	initialize_routes,
+  initialize_routes,
 };
 
 function initialize_routes(app) {
-	enable2fa.enable2fa_post(router);
-	verify2fa.verify2fa_post(router);
-	register.register_post(router);
-	login.login_post(router);
-	reset_password.reset_password_post(router);
-	profile.profile_routes(router); // Use the profile routes
-	documents.document_list_post(router);
-	documents.document_delete_post(router);
-	documents.document_add_post(router);
-	logout.logout_post(router);
-	payment.payment_post(router);
-	payment.payment_get(router);
-	payment.payment_rm_post(router);
-	products.products_routes(router);
+  enable2fa.enable2fa_post(router);
+  verify2fa.verify2fa_post(router);
+  register.register_post(router);
+  login.login_post(router);
+  reset_password.reset_password_post(router);
+  profile.profile_routes(router);
+  documents.document_list_post(router);
+  documents.document_delete_post(router);
+  documents.document_add_post(router);
+  logout.logout_post(router);
+  payment.payment_post(router);
+  payment.payment_get(router);
+  payment.payment_rm_post(router);
+  products.products_routes(router);
+  shopping_cart.shopping_cart_routes(router);
+  checkout.checkout_routes(router);
 
-	test_data.test_data_get(router); // For testing
+  test_data.test_data_get(router); // For testing
 
-	app.use("/api", router); // Use the new routes
-	return;
+  app.use("/api", router); // Use the new routes
+  return;
 }

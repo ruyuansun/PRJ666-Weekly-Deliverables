@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import { Input } from "../../../components/ui/input";
 
-export function PaymentDOM() {
+export function PaymentDOM({ paymentInfo }) {
   const [cardNumber, setCardNumber] = useState("");
   const [expMonth, setExpiryMonth] = useState("");
   const [expYear, setExpiryYear] = useState("");
   const [securityCode, setSecurityCode] = useState("");
   const [paymentType, setPaymentType] = useState("Credit/Debit Card");
+
+  useEffect(() => {
+    if (paymentInfo) {
+      setCardNumber(paymentInfo.card_number || "");
+      setExpiryMonth(paymentInfo.exp_month || "");
+      setExpiryYear(paymentInfo.exp_year || "");
+      setSecurityCode(paymentInfo.security_code || "");
+    }
+  }, [paymentInfo]);
 
   let yearOptions = [];
   const currentYear = new Date().getFullYear();
