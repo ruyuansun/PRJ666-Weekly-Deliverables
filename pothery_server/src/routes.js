@@ -13,6 +13,7 @@ const payment = require("./routes/payment");
 const logout = require("./routes/logout");
 const products = require("./routes/products");
 const shopping_cart = require("./routes/shopping_cart");
+const checkout = require("./routes/checkout");
 
 /* public code */
 
@@ -26,7 +27,7 @@ function initialize_routes(app) {
   register.register_post(router);
   login.login_post(router);
   reset_password.reset_password_post(router);
-  profile.profile_routes(router); // Use the profile routes
+  profile.profile_routes(router);
   documents.document_list_post(router);
   documents.document_delete_post(router);
   documents.document_add_post(router);
@@ -36,6 +37,7 @@ function initialize_routes(app) {
   payment.payment_rm_post(router);
   products.products_routes(router);
   shopping_cart.shopping_cart_routes(router);
+  checkout.checkout_routes(router);
 
   test_data.test_data_get(router); // For testing
 
