@@ -3,7 +3,6 @@
 import Sidemenu from "../../components/SideMenu";
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSelector } from "react-redux";
 import { BACKEND_URL } from "../constants";
 import { CheckoutUserRoleDOM } from "./_components/CheckoutUserRoleDom";
 import { ShippingAddressDOM } from "./_components/ShippingAddressDOM";
@@ -14,7 +13,6 @@ import { OrderSummaryDOM } from "./_components/OrderSummaryDOM";
 export default function Checkout() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const user = useSelector((state) => state.user);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [paymentInfo, setPaymentInfo] = useState(null);
@@ -24,13 +22,14 @@ export default function Checkout() {
   const [shippingCost, setShippingCost] = useState(0);
 
   useEffect(() => {
-    if (!user.isLoggedIn) {
+    const token = localStorage.getItem("token");
+    if (!token) {
       router.push("/login");
     } else {
       // Fetch payment information
       fetch(`${BACKEND_URL}/api/getPaymentMethods`, {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${token}`,
         },
       })
         .then((response) => response.json())
@@ -49,7 +48,7 @@ export default function Checkout() {
         setShippingCost(parseFloat(shippingCost));
       }
     }
-  }, [user, router, searchParams]);
+  }, [router, searchParams]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -107,7 +106,7 @@ export default function Checkout() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(orderData),
       });
@@ -125,7 +124,7 @@ export default function Checkout() {
     }
   }
 
-  return user.isLoggedIn ? (
+  return localStorage.getItem("token") ? (
     <div className="w-11/12 mx-auto min-h-screen">
       <div className="flex">
         <Sidemenu />
