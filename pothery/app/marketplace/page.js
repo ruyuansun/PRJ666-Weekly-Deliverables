@@ -47,6 +47,7 @@ export default function Marketplace() {
       },
       body: JSON.stringify({
         id: productId,
+        qty: 1,
       }),
     });
 

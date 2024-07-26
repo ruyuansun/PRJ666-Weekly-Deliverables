@@ -17,12 +17,13 @@ function shopping_cart_routes(router) {
 function add_product_shopping_cart(router) {
   // add product to shopping cart
   router.post("/shoppingCart/addProd", crypto.authorize_token, (req, res) => {
-    const { id } = req.body;
+    const { id, qty } = req.body;
     const token_data = crypto.decode_token(req);
 
-    const query = "INSERT INTO shopping_cart (productId, uid) VALUES (?,?)";
+    const query =
+      "INSERT INTO shopping_cart (productId, uid, qty) VALUES (?,?,?)";
 
-    db.query(query, [id, token_data.uid])
+    db.query(query, [id, token_data.uid, qty])
       .then((result) => {
         if (result) {
           res.status(200).json(result);
