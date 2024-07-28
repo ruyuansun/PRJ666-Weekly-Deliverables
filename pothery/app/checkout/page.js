@@ -53,16 +53,11 @@ export default function Checkout() {
         calculateTotal(data, shippingCost);
       })
       .catch((err) => console.error(err));
+  }, [router]);
 
-    fetch(`${BACKEND_URL}/api/getPaymentMethods`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setPaymentInfo(data))
-      .catch((error) => console.error("Error fetching payment info:", error));
-  }, [router, shippingCost]);
+  useEffect(() => {
+    calculateTotal(products, shippingCost);
+  }, [shippingCost]);
 
   async function getCart(token) {
     const response = await fetch(`${BACKEND_URL}/api/checkout/getCart`, {
@@ -222,14 +217,20 @@ export default function Checkout() {
                 handleBillingChange={handleBillingChange}
                 useAsBilling={useAsBilling}
               />
-              <PaymentDOM paymentInfo={paymentInfo} />
+              <PaymentDOM
+                paymentInfo={paymentInfo}
+                setPaymentInfo={setPaymentInfo}
+                setError={setError}
+              />
             </div>
             <div className="right-side w-1/2">
               <OrderSummaryDOM
                 cartItems={products}
+                subtotal={subtotal}
+                tax={taxes}
                 total={total}
-                taxes={taxes}
                 shippingCost={shippingCost}
+                setShippingCost={setShippingCost}
               />
             </div>
           </form>
