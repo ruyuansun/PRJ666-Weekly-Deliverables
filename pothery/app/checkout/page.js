@@ -2,9 +2,8 @@
 
 import Sidemenu from "../../components/SideMenu";
 import React, { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { BACKEND_URL } from "../constants";
-import { CheckoutUserRoleDOM } from "./_components/CheckoutUserRoleDom";
 import { ShippingAddressDOM } from "./_components/ShippingAddressDOM";
 import { BillingAddressDOM } from "./_components/BillingAddressDOM";
 import { PaymentDOM } from "./_components/PaymentDOM";
@@ -12,43 +11,112 @@ import { OrderSummaryDOM } from "./_components/OrderSummaryDOM";
 
 export default function Checkout() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const [products, setProducts] = useState([]);
+  const [subtotal, setSubtotal] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [shippingCost, setShippingCost] = useState(7.99);
+  const [taxes, setTaxes] = useState(0);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [paymentInfo, setPaymentInfo] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [taxes, setTaxes] = useState(0);
-  const [shippingCost, setShippingCost] = useState(0);
+  const [billingAddress, setBillingAddress] = useState({
+    firstName: "",
+    lastName: "",
+    streetAddress: "",
+    unit: "",
+    city: "",
+    province: "",
+    postalCode: "",
+  });
 
   useEffect(() => {
+    // Ensure user is logged in
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
-    } else {
-      // Fetch payment information
-      fetch(`${BACKEND_URL}/api/getPaymentMethods`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => setPaymentInfo(data))
-        .catch((error) => console.error("Error fetching payment info:", error));
-
-      // Get cart items, total, taxes, and shipping cost from URL parameters
-      const items = searchParams.get("items");
-      const total = searchParams.get("total");
-      const taxes = searchParams.get("taxes");
-      const shippingCost = searchParams.get("shippingCost");
-      if (items && total && taxes && shippingCost) {
-        setCartItems(JSON.parse(items));
-        setTotal(parseFloat(total));
-        setTaxes(parseFloat(taxes));
-        setShippingCost(parseFloat(shippingCost));
-      }
+      return;
     }
-  }, [router, searchParams]);
+
+    // Fetch cart information
+    getCart(token)
+      .then((data) => {
+        setProducts(data);
+        calculateTotal(data, shippingCost);
+      })
+      .catch((err) => console.error(err));
+
+    // Fetch payment information
+    fetch(`${BACKEND_URL}/api/getPaymentMethods`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setPaymentInfo(data))
+      .catch((error) => console.error("Error fetching payment info:", error));
+  }, [router, shippingCost]);
+
+  async function getCart(token) {
+    const response = await fetch(`${BACKEND_URL}/api/checkout/getCart`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status == 403) {
+      window.location.href = "/login";
+    }
+
+    if (response.status == 200) {
+      let cartData = await response.json();
+      return cartData;
+    } else {
+      const data = await response.json();
+      throw new Error(data.message);
+    }
+  }
+
+  function calculateTotal(products, shippingCost) {
+    let subtotal = products.reduce(
+      (acc, product) => acc + product.price * product.qty,
+      0
+    );
+    setSubtotal(subtotal);
+    let taxes = subtotal * 0.13; // 13% tax
+    setTaxes(taxes);
+    let total = subtotal + taxes + shippingCost;
+    setTotal(total);
+  }
+
+  const handleShippingChange = (event) => {
+    const { name, value, checked } = event.target;
+
+    if (name === "useAsBillingAddress") {
+      if (checked) {
+        const form = document.querySelector("#mainForm");
+        setBillingAddress({
+          firstName: form.firstName.value,
+          lastName: form.lastName.value,
+          streetAddress: form.streetAddress.value,
+          unit: form.unit.value,
+          city: form.city.value,
+          province: form.province.value,
+          postalCode: form.postalCode.value,
+        });
+      }
+    } else {
+      handleBillingChange(event);
+    }
+  };
+
+  const handleBillingChange = (event) => {
+    const { name, value } = event.target;
+    setBillingAddress((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -56,10 +124,10 @@ export default function Checkout() {
     setSuccess("");
 
     const formInfo = document.querySelector("#mainForm");
-    var formData = new FormData(formInfo);
+    const formData = new FormData(formInfo);
 
     const orderData = {
-      items: cartItems,
+      items: products,
       total,
       taxes,
       shippingCost,
@@ -101,19 +169,21 @@ export default function Checkout() {
       },
     };
 
+    const token = localStorage.getItem("token");
+
     try {
-      const response = await fetch(BACKEND_URL + "/api/order/addOrder", {
+      const response = await fetch(BACKEND_URL + "/api/checkout/addOrder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(orderData),
       });
 
       if (response.ok) {
-        const data = await response.json();
         setSuccess("Payment processed successfully!");
+        // Clear the cart and redirect to the order confirmation page
       } else {
         const data = await response.json();
         setError(data.message);
@@ -124,7 +194,7 @@ export default function Checkout() {
     }
   }
 
-  return localStorage.getItem("token") ? (
+  return (
     <div className="w-11/12 mx-auto min-h-screen">
       <div className="flex">
         <Sidemenu />
@@ -138,14 +208,16 @@ export default function Checkout() {
           )}
           <form className="flex" onSubmit={handleSubmit} id="mainForm">
             <div className="left-side w-1/2">
-              <CheckoutUserRoleDOM />
-              <ShippingAddressDOM />
-              <BillingAddressDOM />
+              <ShippingAddressDOM handleShippingChange={handleShippingChange} />
+              <BillingAddressDOM
+                billingAddress={billingAddress}
+                handleBillingChange={handleBillingChange}
+              />
               <PaymentDOM paymentInfo={paymentInfo} />
             </div>
             <div className="right-side w-1/2">
               <OrderSummaryDOM
-                cartItems={cartItems}
+                cartItems={products}
                 total={total}
                 taxes={taxes}
                 shippingCost={shippingCost}
@@ -155,5 +227,5 @@ export default function Checkout() {
         </div>
       </div>
     </div>
-  ) : null;
+  );
 }
