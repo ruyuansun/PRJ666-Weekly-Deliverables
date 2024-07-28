@@ -1,6 +1,11 @@
 import { Input } from "../../../components/ui/input";
 
-export function ShippingAddressDOM({ handleShippingChange }) {
+export function ShippingAddressDOM({
+  shippingAddress,
+  handleShippingChange,
+  handleCheckboxChange,
+  useAsBilling,
+}) {
   return (
     <div>
       <h1 className="mb-2 border-b-2 pb-1">Shipping Address</h1>
@@ -9,12 +14,14 @@ export function ShippingAddressDOM({ handleShippingChange }) {
           name="firstName"
           placeholder="First Name *"
           required
+          value={shippingAddress.firstName}
           onChange={handleShippingChange}
         />
         <Input
           name="lastName"
           placeholder="Last Name *"
           required
+          value={shippingAddress.lastName}
           onChange={handleShippingChange}
         />
       </div>
@@ -23,12 +30,14 @@ export function ShippingAddressDOM({ handleShippingChange }) {
         placeholder="Street Address *"
         required
         className="w-full mb-2"
+        value={shippingAddress.streetAddress}
         onChange={handleShippingChange}
       />
       <Input
         name="unit"
         placeholder="Apt/Suit/Unit (Optional)"
         className="mb-2"
+        value={shippingAddress.unit}
         onChange={handleShippingChange}
       />
       <div className="flex gap-2 mb-2">
@@ -36,9 +45,14 @@ export function ShippingAddressDOM({ handleShippingChange }) {
           name="city"
           placeholder="City *"
           required
+          value={shippingAddress.city}
           onChange={handleShippingChange}
         />
-        <select name="province" onChange={handleShippingChange}>
+        <select
+          name="province"
+          value={shippingAddress.province}
+          onChange={handleShippingChange}
+        >
           <option value="">Province *</option>
           <option value="AB">Alberta</option>
           <option value="BC">British Columbia</option>
@@ -60,6 +74,7 @@ export function ShippingAddressDOM({ handleShippingChange }) {
           name="postalCode"
           placeholder="Postal Code *"
           required
+          value={shippingAddress.postalCode}
           onChange={handleShippingChange}
         />
         <Input
@@ -74,7 +89,8 @@ export function ShippingAddressDOM({ handleShippingChange }) {
           type="checkbox"
           name="useAsBillingAddress"
           className="inline-flex w-auto"
-          onChange={handleShippingChange}
+          checked={useAsBilling}
+          onChange={handleCheckboxChange}
         />
         <span className="ml-2">Use as billing address</span>
       </div>

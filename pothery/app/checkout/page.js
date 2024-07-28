@@ -19,6 +19,15 @@ export default function Checkout() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [paymentInfo, setPaymentInfo] = useState(null);
+  const [shippingAddress, setShippingAddress] = useState({
+    firstName: "",
+    lastName: "",
+    streetAddress: "",
+    unit: "",
+    city: "",
+    province: "",
+    postalCode: "",
+  });
   const [billingAddress, setBillingAddress] = useState({
     firstName: "",
     lastName: "",
@@ -29,15 +38,15 @@ export default function Checkout() {
     postalCode: "",
   });
 
+  const [useAsBilling, setUseAsBilling] = useState(false);
+
   useEffect(() => {
-    // Ensure user is logged in
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
       return;
     }
 
-    // Fetch cart information
     getCart(token)
       .then((data) => {
         setProducts(data);
@@ -45,7 +54,6 @@ export default function Checkout() {
       })
       .catch((err) => console.error(err));
 
-    // Fetch payment information
     fetch(`${BACKEND_URL}/api/getPaymentMethods`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -83,39 +91,35 @@ export default function Checkout() {
       0
     );
     setSubtotal(subtotal);
-    let taxes = subtotal * 0.13; // 13% tax
+    let taxes = subtotal * 0.13;
     setTaxes(taxes);
     let total = subtotal + taxes + shippingCost;
     setTotal(total);
   }
 
   const handleShippingChange = (event) => {
-    const { name, value, checked } = event.target;
+    const { name, value } = event.target;
+    const newShippingAddress = { ...shippingAddress, [name]: value };
 
-    if (name === "useAsBillingAddress") {
-      if (checked) {
-        const form = document.querySelector("#mainForm");
-        setBillingAddress({
-          firstName: form.firstName.value,
-          lastName: form.lastName.value,
-          streetAddress: form.streetAddress.value,
-          unit: form.unit.value,
-          city: form.city.value,
-          province: form.province.value,
-          postalCode: form.postalCode.value,
-        });
-      }
-    } else {
-      handleBillingChange(event);
+    setShippingAddress(newShippingAddress);
+    if (useAsBilling) {
+      setBillingAddress(newShippingAddress);
     }
   };
 
   const handleBillingChange = (event) => {
     const { name, value } = event.target;
-    setBillingAddress((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (!useAsBilling) {
+      setBillingAddress({ ...billingAddress, [name]: value });
+    }
+  };
+
+  const handleCheckboxChange = (event) => {
+    const checked = event.target.checked;
+    setUseAsBilling(checked);
+    if (checked) {
+      setBillingAddress(shippingAddress);
+    }
   };
 
   async function handleSubmit(event) {
@@ -141,7 +145,7 @@ export default function Checkout() {
         postalCode: formData.get("postalCode"),
         phoneNumber: formData.get("phoneNumber"),
       },
-      billingAddress: formData.get("useAsBillingAddress")
+      billingAddress: useAsBilling
         ? {
             firstName: formData.get("firstName"),
             lastName: formData.get("lastName"),
@@ -183,7 +187,6 @@ export default function Checkout() {
 
       if (response.ok) {
         setSuccess("Payment processed successfully!");
-        // Clear the cart and redirect to the order confirmation page
       } else {
         const data = await response.json();
         setError(data.message);
@@ -208,10 +211,16 @@ export default function Checkout() {
           )}
           <form className="flex" onSubmit={handleSubmit} id="mainForm">
             <div className="left-side w-1/2">
-              <ShippingAddressDOM handleShippingChange={handleShippingChange} />
+              <ShippingAddressDOM
+                shippingAddress={shippingAddress}
+                handleShippingChange={handleShippingChange}
+                handleCheckboxChange={handleCheckboxChange}
+                useAsBilling={useAsBilling}
+              />
               <BillingAddressDOM
                 billingAddress={billingAddress}
                 handleBillingChange={handleBillingChange}
+                useAsBilling={useAsBilling}
               />
               <PaymentDOM paymentInfo={paymentInfo} />
             </div>

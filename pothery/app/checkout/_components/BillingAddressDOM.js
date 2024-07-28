@@ -1,52 +1,62 @@
 import { Input } from "../../../components/ui/input";
 
-export function BillingAddressDOM({ billingAddress, handleBillingChange }) {
+export function BillingAddressDOM({
+  billingAddress,
+  handleBillingChange,
+  useAsBilling,
+}) {
   return (
     <div>
       <h1 className="mb-2 border-b-2 pb-1">Billing Address</h1>
       <div className="flex gap-2 mb-2">
         <Input
-          name="billing_firstName"
+          name="firstName"
           placeholder="First Name *"
           required
           value={billingAddress.firstName}
           onChange={handleBillingChange}
+          disabled={useAsBilling}
         />
         <Input
-          name="billing_lastName"
+          name="lastName"
           placeholder="Last Name *"
           required
           value={billingAddress.lastName}
           onChange={handleBillingChange}
+          disabled={useAsBilling}
         />
       </div>
       <Input
-        name="billing_streetAddress"
+        name="streetAddress"
         placeholder="Street Address *"
         required
         className="w-full mb-2"
         value={billingAddress.streetAddress}
         onChange={handleBillingChange}
+        disabled={useAsBilling}
       />
       <Input
-        name="billing_unit"
+        name="unit"
         placeholder="Apt/Suit/Unit (Optional)"
         className="mb-2"
         value={billingAddress.unit}
         onChange={handleBillingChange}
+        disabled={useAsBilling}
       />
       <div className="flex gap-2 mb-2">
         <Input
-          name="billing_city"
+          name="city"
           placeholder="City *"
           required
           value={billingAddress.city}
           onChange={handleBillingChange}
+          disabled={useAsBilling}
         />
         <select
-          name="billing_province"
+          name="province"
           value={billingAddress.province}
           onChange={handleBillingChange}
+          disabled={useAsBilling}
         >
           <option value="">Province *</option>
           <option value="AB">Alberta</option>
@@ -65,11 +75,12 @@ export function BillingAddressDOM({ billingAddress, handleBillingChange }) {
         </select>
       </div>
       <Input
-        name="billing_postalCode"
+        name="postalCode"
         placeholder="Postal Code *"
         required
         value={billingAddress.postalCode}
         onChange={handleBillingChange}
+        disabled={useAsBilling}
       />
     </div>
   );
