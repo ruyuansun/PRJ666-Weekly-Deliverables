@@ -1,3 +1,4 @@
+require('dotenv').config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -24,12 +25,12 @@ async function hash_password_given_matches(password, hash) {
 function decode_token(req) {
   const header = req.headers["authorization"];
   const token = header && header.split(" ")[1];
-  return jwt.decode(token, process.env.MY_SECRET);
+  return jwt.decode(token, "PRJ666");
 }
-console.log("MY_SECRET:", process.env.MY_SECRET); // Add this line for debugging
+console.log("MY_SECRET:", "PRJ666"); // Add this line for debugging
 
 function create_token(uid) {
-  return jwt.sign({ uid }, process.env.MY_SECRET);
+  return jwt.sign({ uid }, "PRJ666");
 }
 
 function authorize_token(req, res, next) {
@@ -37,7 +38,7 @@ function authorize_token(req, res, next) {
   const token = header && header.split(" ")[1];
   if (token == null) return res.sendStatus(401);
 
-  jwt.verify(token, process.env.MY_SECRET, (err) => {
+  jwt.verify(token, "PRJ666", (err) => {
     if (err || invalid_tokens.includes(token)) return res.sendStatus(403);
     next();
   });
