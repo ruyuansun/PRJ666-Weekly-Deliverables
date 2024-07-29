@@ -25,12 +25,12 @@ async function hash_password_given_matches(password, hash) {
 function decode_token(req) {
   const header = req.headers["authorization"];
   const token = header && header.split(" ")[1];
-  return jwt.decode(token, "PRJ666");
+  return jwt.decode(token, process.env.MY_SECRET);
 }
-console.log("MY_SECRET:", "PRJ666"); // Add this line for debugging
+console.log("MY_SECRET:", process.env.MY_SECRET); // Add this line for debugging
 
 function create_token(uid) {
-  return jwt.sign({ uid }, "PRJ666");
+  return jwt.sign({ uid }, process.env.MY_SECRET);
 }
 
 function authorize_token(req, res, next) {
@@ -38,7 +38,7 @@ function authorize_token(req, res, next) {
   const token = header && header.split(" ")[1];
   if (token == null) return res.sendStatus(401);
 
-  jwt.verify(token, "PRJ666", (err) => {
+  jwt.verify(token, process.env.MY_SECRET, (err) => {
     if (err || invalid_tokens.includes(token)) return res.sendStatus(403);
     next();
   });
