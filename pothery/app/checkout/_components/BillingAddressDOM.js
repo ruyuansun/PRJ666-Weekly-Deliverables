@@ -10,7 +10,7 @@ export function BillingAddressDOM({
       <h1 className="mb-2 border-b-2 pb-1">Billing Address</h1>
       <div className="flex gap-2 mb-2">
         <Input
-          name="firstName"
+          name="billing_firstName"
           placeholder="First Name *"
           required
           value={billingAddress.firstName}
@@ -18,7 +18,7 @@ export function BillingAddressDOM({
           disabled={useAsBilling}
         />
         <Input
-          name="lastName"
+          name="billing_lastName"
           placeholder="Last Name *"
           required
           value={billingAddress.lastName}
@@ -27,7 +27,7 @@ export function BillingAddressDOM({
         />
       </div>
       <Input
-        name="streetAddress"
+        name="billing_streetAddress"
         placeholder="Street Address *"
         required
         className="w-full mb-2"
@@ -36,7 +36,7 @@ export function BillingAddressDOM({
         disabled={useAsBilling}
       />
       <Input
-        name="unit"
+        name="billing_unit"
         placeholder="Apt/Suit/Unit (Optional)"
         className="mb-2"
         value={billingAddress.unit}
@@ -45,7 +45,7 @@ export function BillingAddressDOM({
       />
       <div className="flex gap-2 mb-2">
         <Input
-          name="city"
+          name="billing_city"
           placeholder="City *"
           required
           value={billingAddress.city}
@@ -53,7 +53,7 @@ export function BillingAddressDOM({
           disabled={useAsBilling}
         />
         <select
-          name="province"
+          name="billing_province"
           value={billingAddress.province}
           onChange={handleBillingChange}
           disabled={useAsBilling}
@@ -75,7 +75,7 @@ export function BillingAddressDOM({
         </select>
       </div>
       <Input
-        name="postalCode"
+        name="billing_postalCode"
         placeholder="Postal Code *"
         required
         value={billingAddress.postalCode}
