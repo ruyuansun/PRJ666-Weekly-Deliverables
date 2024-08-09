@@ -157,15 +157,7 @@ export default function ShoppingCart() {
 
   // Redirect to checkout page
   function handleCheckout() {
-    router.push({
-      pathname: "/checkout",
-      query: {
-        items: JSON.stringify(products),
-        total: total.toFixed(2),
-        taxes: taxes.toFixed(2),
-        shippingCost: shippingCost.toFixed(2),
-      },
-    });
+    router.push("/checkout");
   }
 
   return (
