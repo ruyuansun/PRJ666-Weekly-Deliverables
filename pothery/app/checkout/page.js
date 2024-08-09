@@ -29,13 +29,13 @@ export default function Checkout() {
     postalCode: "",
   });
   const [billingAddress, setBillingAddress] = useState({
-    billing_firstName: "",
-    billing_lastName: "",
-    billing_streetAddress: "",
-    billing_unit: "",
-    billing_city: "",
-    billing_province: "",
-    billing_postalCode: "",
+    firstName: "",
+    lastName: "",
+    streetAddress: "",
+    unit: "",
+    city: "",
+    province: "",
+    postalCode: "",
   });
 
   const [useAsBilling, setUseAsBilling] = useState(false);
@@ -142,22 +142,22 @@ export default function Checkout() {
       },
       billingAddress: useAsBilling
         ? {
-            billing_firstName: formData.get("firstName"),
-            billing_lastName: formData.get("lastName"),
-            billing_streetAddress: formData.get("streetAddress"),
-            billing_unit: formData.get("unit"),
-            billing_city: formData.get("city"),
-            billing_province: formData.get("province"),
-            billing_postalCode: formData.get("postalCode"),
+            firstName: formData.get("firstName"),
+            lastName: formData.get("lastName"),
+            streetAddress: formData.get("streetAddress"),
+            unit: formData.get("unit"),
+            city: formData.get("city"),
+            province: formData.get("province"),
+            postalCode: formData.get("postalCode"),
           }
         : {
-            billing_firstName: formData.get("billing_firstName"),
-            billing_lastName: formData.get("billing_lastName"),
-            billing_streetAddress: formData.get("billing_streetAddress"),
-            billing_unit: formData.get("billing_unit"),
-            billing_city: formData.get("billing_city"),
-            billing_province: formData.get("billing_province"),
-            billing_postalCode: formData.get("billing_postalCode"),
+            firstName: formData.get("billing_firstName"),
+            lastName: formData.get("billing_lastName"),
+            streetAddress: formData.get("billing_streetAddress"),
+            unit: formData.get("billing_unit"),
+            city: formData.get("billing_city"),
+            province: formData.get("billing_province"),
+            postalCode: formData.get("billing_postalCode"),
           },
       paymentInfo: {
         paymentType: formData.get("paymentType"),

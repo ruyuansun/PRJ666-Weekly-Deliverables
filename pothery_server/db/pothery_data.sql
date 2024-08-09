@@ -44,6 +44,24 @@ INSERT INTO `documents` VALUES (68,15,_binary '����\0JFIF\0\0x\0x\0\
 UNLOCK TABLES;
 
 --
+-- Table structure for table `addresses`
+--
+DROP TABLE IF EXISTS `addresses`;
+
+CREATE TABLE `addresses` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `street_address` varchar(255) NOT NULL,
+  `unit` varchar(255),
+  `city` varchar(255) NOT NULL,
+  `province` varchar(255) NOT NULL,
+  `postal_code` varchar(10) NOT NULL,
+  `phone_number` varchar(20),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
 -- Table structure for table `orders`
 --
 
@@ -207,6 +225,27 @@ INSERT INTO `test_data` VALUES (1,'Toronto',10);
 /*!40000 ALTER TABLE `test_data` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+DROP TABLE IF EXISTS `subscriptions`;
+
+CREATE TABLE `subscriptions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `level` varchar(50) NOT NULL,
+  `description` text DEFAULT NULL,
+  `price` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+LOCK TABLES `subscriptions` WRITE;
+
+INSERT INTO `subscriptions` (`level`, `description`, `price`) VALUES
+('Basic', 'Access to basic features', 9.99),
+('Premium', 'Access to premium features including exclusive content', 19.99),
+('Pro', 'All features included with priority support', 29.99);
+
+UNLOCK TABLES;
+
+
 --
 -- Table structure for table `users`
 --
@@ -222,7 +261,10 @@ CREATE TABLE `users` (
   `_2fa_secret` varchar(255) DEFAULT NULL,
   `profile_picture` varchar(255) DEFAULT NULL,
   `bio` text,
-  PRIMARY KEY (`id`)
+  `subscription_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `subscription_id` (`subscription_id`),
+  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`subscription_id`) REFERENCES `subscriptions` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -232,7 +274,8 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (4,'test@test.ca','$2b$13$r50/1GIXs8lZPdnooCFC0enbjyD55YerCzqzU7t2E0EdVtYWzwU.i',0,NULL,NULL,''),(15,'mfa@mfa.ca','$2b$13$.1MKwQFnE.oGVxveMZkGBevzOdvY696sAKHCSWD5fLX83v2OHkhhu',1,'IBMCU6JIMR5SGXLIO46CM2CGFBHDUNJZ',NULL,NULL);
+INSERT INTO `users` VALUES (4,'test@test.ca','$2b$13$r50/1GIXs8lZPdnooCFC0enbjyD55YerCzqzU7t2E0EdVtYWzwU.i',0,NULL,NULL,'',1),(15,'mfa@mfa.ca','$2b$13$.1MKwQFnE.oGVxveMZkGBevzOdvY696sAKHCSWD5fLX83v2OHkhhu',1,'IBMCU6JIMR5SGXLIO46CM2CGFBHDUNJZ',NULL,NULL,NULL);
+
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

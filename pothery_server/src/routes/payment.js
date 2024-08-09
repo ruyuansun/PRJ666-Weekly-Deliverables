@@ -55,6 +55,8 @@ function payment_get(router) {
     const query = "SELECT * FROM payments WHERE uid = ? LIMIT 1";
     db.query(query, [token_data.uid])
       .then((result) => {
+        console.log("Database result:", result);
+
         if (result.length > 0) {
           res.status(200).json(result[0]);
         } else {

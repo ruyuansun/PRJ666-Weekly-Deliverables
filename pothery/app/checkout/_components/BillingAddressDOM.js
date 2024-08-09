@@ -13,7 +13,7 @@ export function BillingAddressDOM({
           name="billing_firstName"
           placeholder="First Name *"
           required
-          value={billingAddress.firstName}
+          value={billingAddress.billing_firstName}
           onChange={handleBillingChange}
           disabled={useAsBilling}
         />
@@ -21,7 +21,7 @@ export function BillingAddressDOM({
           name="billing_lastName"
           placeholder="Last Name *"
           required
-          value={billingAddress.lastName}
+          value={billingAddress.billing_lastName}
           onChange={handleBillingChange}
           disabled={useAsBilling}
         />
@@ -31,7 +31,7 @@ export function BillingAddressDOM({
         placeholder="Street Address *"
         required
         className="w-full mb-2"
-        value={billingAddress.streetAddress}
+        value={billingAddress.billing_streetAddress}
         onChange={handleBillingChange}
         disabled={useAsBilling}
       />
@@ -39,7 +39,7 @@ export function BillingAddressDOM({
         name="billing_unit"
         placeholder="Apt/Suit/Unit (Optional)"
         className="mb-2"
-        value={billingAddress.unit}
+        value={billingAddress.billing_unit}
         onChange={handleBillingChange}
         disabled={useAsBilling}
       />
@@ -48,13 +48,13 @@ export function BillingAddressDOM({
           name="billing_city"
           placeholder="City *"
           required
-          value={billingAddress.city}
+          value={billingAddress.billing_city}
           onChange={handleBillingChange}
           disabled={useAsBilling}
         />
         <select
           name="billing_province"
-          value={billingAddress.province}
+          value={billingAddress.billing_province}
           onChange={handleBillingChange}
           disabled={useAsBilling}
         >
@@ -78,7 +78,7 @@ export function BillingAddressDOM({
         name="billing_postalCode"
         placeholder="Postal Code *"
         required
-        value={billingAddress.postalCode}
+        value={billingAddress.billing_postalCode}
         onChange={handleBillingChange}
         disabled={useAsBilling}
       />

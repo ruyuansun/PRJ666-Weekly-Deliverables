@@ -16,6 +16,7 @@ const shopping_cart = require("./routes/shopping_cart");
 const checkout = require("./routes/checkout");
 const posts = require("./routes/posts");
 const events = require("./routes/events");
+const subscription = require("./routes/subscription");
 
 /* public code */
 
@@ -40,8 +41,9 @@ function initialize_routes(app) {
   products.products_routes(router);
   shopping_cart.shopping_cart_routes(router);
   checkout.checkout_routes(router);
-  posts.post_routes(router)
-  events.eventroutes(router)
+  posts.post_routes(router);
+  events.eventroutes(router);
+  subscription.subscription_routes(router);
 
   test_data.test_data_get(router); // For testing
 
